@@ -1,0 +1,9 @@
+{
+  "source_revision": "971282632129110794c9d6edd22026e9de2359be",
+  "origin": "Hand-derived exact README arithmetic, not a Go differential corpus",
+  "cases": [
+    {"num": "375000000", "den": "1", "count": "4", "times": ["0", "2", "5", "8"]},
+    {"num": "30000", "den": "1001", "count": "4", "times": ["0", "33366666", "66733333", "100100000"]},
+    {"num": "18446744073709551615", "den": "1", "count": "3", "times": ["0", "0", "0"]}
+  ]
+}
