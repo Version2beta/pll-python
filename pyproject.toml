@@ -12,6 +12,9 @@ license = "MIT"
 license-files = ["LICENSE"]
 dependencies = []
 
+[project.scripts]
+pllpace = "pll.pllpace:main"
+
 [tool.setuptools]
 packages = ["pll"]
 include-package-data = false

@@ -1,6 +1,6 @@
 # pll-python — exact pacing and clock following
 
-> **Stages 1–3 delivered: pacing, clock following, corpus and local packaging.**
+> **Stages 1–3 delivered; explicit `pllpace` CLI added by direct request.**
 > Stage 1/2 runtime production bytes remain unchanged. Local distribution version: 0.1.0.
 > See [Stage 3 verification](docs/stage3-verification.md); no registry release is claimed.
 
@@ -26,16 +26,17 @@ They work separately or together: follower trim can steer a pacer.
 | Approved — Stage 3 | Deterministic offline pinned-Go public-API corpus and local wheel/sdist installed-use verification; preserve production and prior 43 tests, stop on disagreement. |
 | Approved — Stage 3 | Distribution `pll-python` 0.1.0, import `pll`, Python >=3.11, MIT, setuptools.build_meta, no runtime dependencies or entry points. Build-only pins and disposable external provisioning/build/install checks authorized. |
 | Deferred | Registry availability, publishing, release automation and devices; none performed by this kit. |
-| Deferred — before affected product work | CLI, simulator product, benchmarks and real-device integration. |
+| Approved — direct follow-up | `pllpace` real-time CLI equivalent using the delivered library; explicit clock/sleep/output/optional UDP effects only when invoked. |
+| Deferred — before affected product work | Simulator product, benchmarks and real-device integration. |
 
-**Current gate:** Stage 3 delivered on `stage3-verification` after independent
-acceptance and fresh owner verification. Stop for author review before any next
-stage; no further model/provider calls or publishing are authorized here.
+**Current gate:** Stage 3 is delivered; the directly requested CLI addition is
+ready for independent review. No model/provider calls, publishing, commits or
+pushes are authorized by this CLI request.
 Stage 1/2 production and preceding 43 tests remain byte-identical. Disagreements
 stop work for review, not contract changes or tolerance relaxation. Private
 runtime is excluded and never copied/staged; pinned upstream remains read-only.
 
-**Delivered scope:** replay in `scripts/replay_corpus.py` and setuptools metadata
+**Historical Stage 3 scope:** replay in `scripts/replay_corpus.py` and setuptools metadata
 in `pyproject.toml`, with no new runtime module, API or dependency. Protected
 artifacts/harness/tests and contracts are unchanged; kit write permissions below
 are historical, not an invitation to start another implementation loop.
@@ -64,19 +65,75 @@ allocations, race-detector results, simulator results or real-time scheduling.
 This is a library, not a token bucket, sleeping rate limiter, scheduler, clock
 servo/PTP/NTP client, counter-unwrapper, transport, payload queue or device driver.
 The Go `cmd/pllpace`, `cmd/pllsim`, UDP tests, full simulator and benchmarking
-commands are excluded from initial port scope. Small deterministic synthetic
-clock tests are in scope; shipping a simulator/CLI is deferred.
+commands were excluded from initial port scope. The directly requested
+`pllpace` adapter is now included; simulator and benchmark products remain deferred.
 
 ## Prerequisites and installation (local 0.1.0 distribution)
 
 CPython 3.11+ with binary64 float, unbounded integers; stdlib-only runtime.
-Distribution `pll-python` 0.1.0 imports as `pll`. No dependencies/entry points.
+Distribution `pll-python` 0.1.0 imports as `pll`. No runtime dependencies;
+`pllpace` is the sole console entry point.
 Install a locally built wheel with
 `python -m pip install --no-index --no-deps WHEEL_PATH` in a disposable
 environment. Build commands appear below; verified preserved artifact paths
 and hashes are recorded in [delivery evidence](docs/stage3-verification.md).
 No registry availability or publication is claimed. Direct root import remains
 available. Build tools are not runtime dependencies.
+
+## Real-time pacing command (`pllpace`)
+
+After local wheel installation, run `pllpace --help`, or use
+`python -m pll.pllpace` (also available from this source checkout):
+
+```sh
+pllpace -seconds 0.1 -bps 8000 -unit-bytes 1000
+python -m pll.pllpace --mode ticker --seconds 0.1 --bps 8000
+pllpace -seconds 0.1 -bps 8000 -udp loopback -per-datagram 2
+# Optional longer measurement; sends only to an in-process localhost receiver:
+pllpace -find-max -seconds 2 -udp loopback -slack 5ms
+```
+
+Equivalent to upstream `cmd/pllpace`: defaults are 100,000,000 bits/s,
+1000 bytes/unit, 10 seconds/trial, pacer mode, discard output, one unit per
+UDP datagram, search disabled, and 5ms search slack. Both `-flag` and `--flag`
+forms (including `=value`) work. `-find-max` is a presence-only argparse flag,
+not Go's `-find-max=true/false`; omit it for false. Argparse rejects positional
+arguments/unknown options and uses exit 2 for syntax errors; semantic/runtime
+errors use exit 1, interruption 130. Slack accepts signed composite Go-style
+`ns`, `us`/`µs`/`μs`, `ms`, `s`, `m`, `h` durations (or `0`); seconds is a
+finite floating-point count converted to integer ns. Source uint64/int64 and
+platform-int envelopes and the 65507-byte UDP payload limit are retained.
+All options are validated before payload allocation or sockets are opened.
+
+Pacer mode uses `Pacer(bits_per_second(...))`, slot zero immediately due,
+and batches at most 4096 units per wake-up without dropping backlog. Ticker
+mode starts after one exact integer-ns period and emits one unit per wake-up,
+dropping missed periods; it is a Python monotonic-clock/sleep comparison,
+**not** Go's timer implementation or a real-time scheduler guarantee. Sleeps
+are capped at the trial deadline, even at very low rates. Final partial groups
+are flushed per trial, including flush time in elapsed/backlog/byte counts;
+failed writes discard buffered data, never retry it in the next trial.
+Discard ignores `-per-datagram`, matching upstream. UDP is used only with
+`-udp loopback` or `-udp host:port` (bracket IPv6 addresses); remote destinations
+are resolved/sent to only when explicitly selected. The localhost receiver and
+sender are closed and the worker joined on success, error or interruption.
+UDP writer acceptance does not acknowledge delivery; receipt is not measured.
+
+Output includes progress each elapsed second, writer Mbps, offered units,
+writer-accepted bytes, elapsed time, end backlog, wake-up count/average/max
+batch, and pacer oldest-unit lateness median/p99/max (floor-index quantiles).
+Durations are printed in milliseconds rather than Go duration formatting.
+Search trials must be nonempty, have end backlog <= slack and lateness p99 <=
+slack; rates double from `-bps` through at most 1,000,000,000,000 bits/s, then
+bisect a passing/failing bracket until within 5% or adjacent integer rates.
+If the initial rate fails it does not search below it. If all doubling trials
+pass, only the highest *tested* rate is reported. This is an empirical local
+measurement, not proof of a globally maximal sustainable rate or portable
+performance. Trial duration, byte allocations and collected lateness samples
+consume real time/memory; search can run many trials. Ctrl-C cancels it.
+
+The library itself still performs no implicit effects. Importing `pll.pllpace`
+starts no clocks, output, threads or sockets; effects belong to CLI invocation.
 
 ## First useful example (delivered Stage 1)
 
@@ -620,12 +677,12 @@ progress notes do not pause the runner. Return to review; do not chain stages.
 
 ## Stage 3 local verification and historical kit operations
 
-Current offline owner checks (50 tests, all 15 judge gates; externally pinned
+Current offline owner checks (60 tests, all 15 judge gates; externally pinned
 build environment required for distribution checks):
 
 ```sh
 export PLL_BUILD_PYTHON="/absolute/external/build-env/bin/python"
-PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/run_tests.py all 50
+PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/run_tests.py all 60
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v
 PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/check_tree.py
 PYTHONDONTWRITEBYTECODE=1 bash scripts/loop.sh --check

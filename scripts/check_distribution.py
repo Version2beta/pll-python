@@ -15,7 +15,7 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCES = ['__init__.py', '_errors.py', '_values.py', '_follower_values.py',
-           '_rate.py', '_span.py', '_pacer.py', '_follower.py']
+           '_rate.py', '_span.py', '_pacer.py', '_follower.py', 'pllpace.py']
 PINS = dict(line.strip().split('==') for line in (ROOT/'scripts/build-requirements.txt').read_text().splitlines())
 
 
@@ -31,7 +31,8 @@ def main():
     assert project['requires-python']=='>=3.11' and project['readme']=='README.md'
     assert project['license']=='MIT' and project['license-files']==['LICENSE']
     assert project['dependencies']==[]
-    assert not any(project.get(k) for k in ('scripts','gui-scripts','entry-points','optional-dependencies','dynamic'))
+    assert project['scripts'] == {'pllpace': 'pll.pllpace:main'}
+    assert not any(project.get(k) for k in ('gui-scripts','entry-points','optional-dependencies','dynamic'))
     packages = config['tool']['setuptools']
     assert packages['packages']==['pll'] and packages['include-package-data'] is False
     assert not packages.get('py-modules')
@@ -81,7 +82,7 @@ def main():
                 assert metadata['Name']=='pll-python' and metadata['Version']=='0.1.0'
                 assert metadata['Requires-Python']=='>=3.11' and not metadata.get_all('Requires-Dist')
                 assert metadata['License-Expression']=='MIT'
-                assert not any(n.endswith('entry_points.txt') for n in names)
+                assert archive.read('pll_python-0.1.0.dist-info/entry_points.txt').decode().strip() == '[console_scripts]\npllpace = pll.pllpace:main'
                 assert archive.read('pll_python-0.1.0.dist-info/licenses/LICENSE')==(ROOT/'LICENSE').read_bytes()
                 for n in SOURCES:
                     assert archive.read('pll/'+n)==(ROOT/'pll'/n).read_bytes()
@@ -93,6 +94,12 @@ def main():
                 run([py,'-I','-m','pip','install','--no-index','--no-deps',str(w)],tmp)
                 probe="import pll,sys,pathlib; assert pathlib.Path(pll.__file__).is_relative_to(sys.prefix); print(pll.__file__)\n"+examples
                 run([py,'-I','-c',probe],tmp)
+                probe_cli = "import pll.pllpace,sys,pathlib,importlib.metadata as m; assert pathlib.Path(pll.pllpace.__file__).is_relative_to(sys.prefix); ep=[e for e in m.distribution('pll-python').entry_points if e.name=='pllpace']; assert len(ep)==1 and ep[0].load() is pll.pllpace.main; print(pll.pllpace.__file__)"
+                run([py,'-I','-c',probe_cli],tmp)
+                for command in ([str(venv/'bin/pllpace')], [py,'-I','-m','pll.pllpace']):
+                    run(command+['--help'],tmp)
+                    observed=run(command+['-seconds','.002','-bps','8','-unit-bytes','1'],tmp,True)
+                    assert '1 offered units, 1 writer-accepted bytes' in observed, observed
         print('PASS DISTRIBUTION BUILDS AND INSTALLED EXAMPLES')
 
 

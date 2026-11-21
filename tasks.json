@@ -191,10 +191,10 @@
     },
     {
       "id": "S3",
-      "title": "Whole tree: all 50 tests, artifacts and installed distribution",
-      "test": "PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/check_tree.py && PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/run_tests.py all 50 && PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/check_distribution.py",
+      "title": "Whole tree: all 60 tests, artifacts and installed distribution",
+      "test": "PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/check_tree.py && PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/run_tests.py all 60 && PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/check_distribution.py",
       "expect": [
-        "^PASS COUNT 50$",
+        "^PASS COUNT 60$",
         "^PASS SYNTAX AND WHITESPACE$",
         "^PASS DISTRIBUTION BUILDS AND INSTALLED EXAMPLES$"
       ],

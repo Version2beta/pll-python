@@ -1,3 +1,19 @@
+# Current direct-request CLI contract
+
+The user explicitly requested an equivalent of `../pll/cmd/pllpace` using the
+delivered library. README's Real-time pacing command section is the current
+contract for `pll/pllpace.py`, console script `pllpace = pll.pllpace:main`, its
+stdlib tests and packaging guard updates. Core library production bytes and
+existing APIs/tests remain unchanged. Explicit invocation effects are separate
+from the effect-free library. No simulator, benchmark product, release,
+dependency, version bump or model runner is introduced. Full inventory is now
+60 tests; `tests.test_pllpace` adds ten bounded clock/writer/localhost checks.
+
+The sections below record completed historical kits. Their writable/protected
+paths and no-entry-point scope are historical, superseded only for this explicit
+CLI addition and its coherent docs/tests/packaging verification changes.
+
+---
 # Stage 3 subordinate supporting contract
 
 README.md Decisions, numerical contract and Stage 3 operations are authoritative.
