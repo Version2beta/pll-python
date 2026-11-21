@@ -1,6 +1,11 @@
-# Stage 1 delivery and historical verification
+# Historical Stage 1 delivery and verification
 
-## Current implementation delivery
+This document records Stage 1 only. Its absent-Follower/no-owner-Git statements
+below describe that historical delivery, not the current checkout. Complete
+Stage 2 Follower and owner Git history are now delivered; see
+[Stage 2 delivery evidence](stage2-verification.md) for current status.
+
+## Historical Stage 1 implementation delivery
 
 Stage 1 exact Rate/Pacer/immutable lazy Span is implemented and delivered in
 `/Users/rob/Development/pll-python`. Direct root `import pll` uses only the
@@ -70,7 +75,7 @@ security proof, Go-generated differential corpus, arbitrary interpreter matrix,
 Follower, performance, release or real-device verification. The representative
 runtime-effect trap starts after import; fresh direct import success is not an
 import-effects trap. Historical reference checks establish feasibility only;
-current implementation claims are bounded by the fresh delivery evidence above.
+Stage 1 implementation claims are bounded by the historical delivery evidence above.
 
 ## Historical preparation verification
 

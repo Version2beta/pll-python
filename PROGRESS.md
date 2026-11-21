@@ -21,3 +21,12 @@ Remaining: no T5 blocker or new contract decision; T6-T7 untouched. Not committe
 T5
 Corrected pll/_pacer.py and pll/_span.py to store and consume exact trimmed segment periods, reduced on trim changes, preserving floor anchors, retained snapshots, equal-trim no-ops and atomic failures. Exact task command: PASS COUNT 5; prior rate/claim/span/due tests: 20/20 OK; check_tree protections/syntax/whitespace and git diff --check passed.
 Remaining: no new contract decision or T5 blocker; T6-T7 untouched. Not committed or marked done.
+F1
+Implemented default config and field-by-field type, signed64 envelope and semantic validation with a frozen configuration snapshot in pll/_follower.py; exact task command passed both tests (PASS COUNT 2).
+Remaining: F2-F7 follower mapping, loop, windows and numerical/workflow validation; no new contract decision or blocker. Not committed or marked done.
+F2
+Implemented integer-base mappings, ties-away rounding, wide cancellation, phased validation and transactional observations in pll/_follower.py, with required reset/query state and complete window/outlier/step handling rather than special-case shortcuts; exact task command passed (PASS COUNT 2), and git diff --check passed.
+Remaining: F3-F7 loop/window/model/workflow and whole-suite validation have not been run; no new contract decision or blocker. Not committed or marked done.
+F5
+Converted outlier/run-agreement and lock thresholds to binary64 in pll/_follower.py to preserve pinned Go comparison behavior at signed64 boundaries; exact task command passed (PASS COUNT 3).
+Remaining: broader regression/workflow and whole-suite validation not run in this attempt; no new contract decision or blocker. Not committed or marked done.

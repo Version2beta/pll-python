@@ -1,4 +1,66 @@
-# Stage 2 complete Follower kit — preparation evidence
+# Stage 2 complete Follower — final delivery evidence
+
+## Delivered status and provenance
+
+Stage 2 is delivered on owner branch `stage2-follower`, after parent independent
+acceptance (no review issues) of sandbox `stage2-implementation` at
+`1094afb3db1ede7c96f4f2033131423b32e6c4e6`, located at
+`/tmp/pll-stage2-live.xDEfgw/implementation`. Source/review/run evidence remains at
+`/tmp/pll-stage2-live.xDEfgw/`, including `review.md`. Original implementation
+commits are `346495e` (F1), `658e5f2` (F2), and `1094afb` (F5); the complete full
+SHAs and transferred SHA-256 hashes are recorded in delivery `provenance.json`.
+Owner started clean at `37fc53c417aecc6fd14fa6eb540fb4af5d8f894f`; every tracked
+path matched that baseline and the prior owner-before hashes. Sandbox was clean,
+its entire tracked source matched accepted HEAD, and its only changes from that
+baseline were `pll/_follower.py` and `PROGRESS.md`. Those two files were transferred
+byte-for-byte, without merge/cherry-pick or alteration of the attempt history.
+README and verification documentation are authorized post-loop maintenance.
+
+Complete Follower is available by direct root import, including windows,
+outliers and steps. No packaging, release, broader Go differential corpus,
+performance, real-device or exhaustive security/correctness claim is made.
+Stage 3 remains deferred for author review. No new models, installs, remotes,
+upstream writes or future-stage work were needed for this delivery. `.wtha/`
+was not accessed, copied or staged; snapshots use explicit tracked paths only.
+
+## Fresh owner validation
+
+Delivery evidence: `/var/folders/vw/fh_b6s2s4l154vl9dl21lx480000gn/T/pll-stage2-delivery.uazbwzw1/` (outside owner). `owner-before/` contains only
+explicit tracked-path snapshots; `owner-before.json`, `provenance.json`,
+`commands.json`, per-command stdout/stderr and `validation-final.json` retain
+hashes, exact commands and results. Reproduction script:
+`/tmp/pll-stage2-validate-owner.py`. No private source was shipped in the kit.
+
+Fresh checks executed from the actual owner root, with bytecode disabled:
+
+| Commands / observation | Observed result |
+| --- | --- |
+| `python3 -B scripts/run_tests.py all 43` and `python3.11` equivalent | Both: 43 explicit PASS observations, `PASS COUNT 43`; no skips/expected failures |
+| `python3 -B -m unittest discover -s tests -v` and `python3.11` equivalent | Both: 43 tests, OK |
+| `python3 -B scripts/check_tree.py` and `python3.11` equivalent | Both: `PASS PROTECTIONS 34`, syntax/whitespace pass |
+| `PYTHONDONTWRITEBYTECODE=1 bash scripts/loop.sh --check`, default and external Python 3.11 PATH shim | Both: all 13 T1–T6/F1–F7 rows pass; no model calls |
+| External `interface_check.py` on both interpreters with owner `PYTHONPATH` | All three extracted README Python fences pass; asserts exact owner `pll.__file__` and `pll._follower.__file__`, not sandbox |
+| Copied external `outlier_continuation_probe.py OWNER_ROOT` on both interpreters | Active outlier-run overflow/valid continuation passes for window_ns=0 and 2 |
+| `cmp scripts/loop.sh` against installed skill; `bash -n scripts/loop.sh` | Byte-identical runner and valid shell syntax |
+| `cmp` baseline snapshots of `_pacer.py`, `_rate.py`, `_span.py`, `_values.py`, `scripts/loop.sh` | Every file unchanged |
+| Tracked source hashes and visible inventory around each validation command | No source or inventory mutation; no staged files |
+| `git diff --check` | Pass |
+
+Observed interpreters: CPython 3.15.0 (`python3`) and 3.11.15 (`python3.11`).
+Transferred follower SHA-256:
+`30939f80188ee271e6142e7f31a6d3be552991ef8db701ca2ca31ac5b480ca94`.
+PROGRESS SHA-256: `3c3d07111d8a48daae8e1e48c79b161eec95ec4996cbb2ce9c36ae70bf9250de`.
+The exact final diff paths are `pll/_follower.py`, `PROGRESS.md`, `README.md`,
+`docs/stage2-verification.md`, and `docs/verification.md`. All other tracked paths,
+including pacing, seams, tests, fixtures and runner, remain baseline-identical.
+PROGRESS preserves original attempt wording as historical provenance; this
+section records completed owner delivery. Stage 2 handoff stops here.
+
+## Historical preparation evidence
+
+The following sections record preparation only, before the isolated accepted
+implementation run and final owner delivery; stub/private-reference and next-gate
+statements below are historical, not current status.
 
 ## Scope and identity
 

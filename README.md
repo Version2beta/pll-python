@@ -21,15 +21,16 @@ They work separately or together: follower trim can steer a pacer.
 | Approved | First kit: exact Rate/Pacer/immutable lazy Span, import `pll`, CPython 3.11+, standard library runtime/tests, existing pacing API/bounds/ownership/effects, retained MIT attribution in LICENSE. Useful standalone pacing; no partial Follower. |
 | Approved | Reject bool, accept int/float subclasses where that type is required. Validate all argument types, then all input envelopes, then semantics, each in signature order. Config validation retains its field-by-field exception. |
 | Completed — Stage 1 only | Separately authorized isolated implementation and exact-segment repair; accepted sandbox source delivered to owner after review and fresh direct checks. Original kit preparation itself made no live calls. Historical Stage 1 permissions are separate from the approved Stage 2 direction. |
-| Approved | Stage 2 complete Follower, including windows/outliers/steps; no temporary unsupported exceptions. Frozen config/Observation, strict byte IntEnums, read-only ConfigError metadata, signed64 counts, strict float config and field-by-field validation. |
+| Completed — Stage 2 | Complete Follower delivered, including windows/outliers/steps; no temporary unsupported exceptions. Frozen config/Observation, strict byte IntEnums, read-only ConfigError metadata, signed64 counts, strict float config and field-by-field validation. |
 | Approved | Pinned source evaluation order and robust capped products override obsolete Go SPEC dt capping. Exact classifications/boundaries; fixture-specific tolerances below. |
 | Approved | Initialize owner Git, preserve explicit Stage 1 inventory as baseline, keep `/.wtha/` privately excluded, commit verified preparation only. Later isolated loop uses the same pinned models, provider spending caps, passing commits and attempt-owned failing discards; preparation does not launch it. |
 | Deferred — Stage 3 | Broader reviewed Go differential corpus, packaging and release validation. |
 | Deferred — before release/install | Distribution name `pll-python`, registry availability/version, packaging/build backend, other interpreters, release automation. No backend or installable distribution exists. |
 | Deferred — before affected product work | CLI, simulator product, benchmarks and real-device integration. |
 
-**Current gate:** review the verified Stage 2 kit before launching any live loop.
-Owner branch `stage2-follower` retains Stage 1 baseline/provenance; `.wtha/` is
+**Current gate:** Stage 2 is delivered after independent acceptance and fresh owner
+checks; stop here for author review. Stage 3 is deferred, not authorized to launch.
+Owner branch `stage2-follower` retains Stage 1 and Stage 2 provenance; `.wtha/` is
 private via `.git/info/exclude` and is never part of kit inventory or commits.
 The pinned Go tree remains read-only. No remote/install is authorized here.
 
@@ -78,8 +79,8 @@ using an already prepared build environment. This may write into the selected
 Python environment; do not run it now. Build metadata/backend does not exist yet
 and its prerequisites remain to be selected. No registry install command is
 promised, and the recommended name has not been checked or published. Stage 1
-pacing examples run directly from this project root without installation or
-third-party packages; follower examples are Stage 2 acceptance requirements.
+pacing and complete Stage 2 Follower examples run directly from this project root
+without installation or third-party packages (`from pll import Follower`).
 
 ## First useful example (delivered Stage 1)
 
@@ -503,11 +504,11 @@ write environment/build/cache files, tests consume CPU and may write controlled
 fixture/cache outputs. None of these are promised library runtime effects.
 No network or credentials are required by the deterministic checks.
 
-## Deterministic verification contract (Stage 2 preparation)
+## Deterministic verification contract (delivered Stage 2)
 
 Use standard-library `unittest` with source-named tests: rate, pacer, span,
 follower_config, follower, models, differential and README examples. Stage 1 pacing checks are retained; Stage 2 adds complete follower checks.
-Commands from the project root (stubs intentionally fail follower checks):
+Commands from the project root (delivered implementation passes all 43 tests):
 
 ```sh
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v
@@ -568,12 +569,18 @@ private passing reference and runner-judge checks. Return for review between sta
 
 1. **Delivered pacing:** retain all 29 behavioral checks; only the obsolete
    nine-export/absent-follower assertion changes for the approved surface.
-2. **Prepared complete Follower:** config, maps, full loop/windows/outliers/steps,
+2. **Delivered complete Follower:** config, maps, full loop/windows/outliers/steps,
    numerical and rollback boundaries, all README examples and runtime checks.
-   Private reference feasibility is not owner implementation delivery.
+   Accepted sandbox bytes are delivered to owner; see [delivery evidence](docs/stage2-verification.md).
 3. **Deferred:** broader reviewed Go corpus, packaging/release and real devices.
 
-## Kit operations (Stage 2)
+## Local verification and historical kit operations (Stage 2)
+
+Stage 2 delivery is complete. Run the deterministic verification commands above
+or the unchanged model-free `PYTHONDONTWRITEBYTECODE=1 bash scripts/loop.sh --check`
+from this root. No further model calls are needed. The remainder of this section
+records the historical isolated kit/loop procedure, not a current launch request.
+Stage 3 requires separate author review and approval.
 
 Authority: README; subordinate contract: SPEC.md. Complete protected public seams:
 `pll/__init__.py`, `_errors.py`, `_values.py`, `_follower_values.py`; all delivered
@@ -594,9 +601,9 @@ PYTHONDONTWRITEBYTECODE=1 bash scripts/loop.sh --check
 ```
 
 Prerequisites CPython 3.11+, Bash, Git, jq, timeout/gtimeout are local; no install.
-Prior T1–T6 pacing checks must pass; new tasks/final intentionally fail on stubs.
-Review docs/stage2-verification.md before live work. **Do not launch during
-preparation.** The later separately reviewed isolated loop retains exact commands:
+At preparation, prior T1–T6 passed and follower/final checks intentionally failed
+on stubs. The accepted isolated run subsequently completed; all 13 judge rows now
+pass on owner. The historical authorized loop used these exact commands:
 
 ```sh
 CHEAP_CMD='pi --provider anthropic --model claude-haiku-5-5 --thinking high --print --no-session' \
