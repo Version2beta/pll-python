@@ -66,10 +66,9 @@ class RateTests(unittest.TestCase):
     def test_surface_and_signatures(self):
         self.assertEqual(set(pll.__all__), {"Rate", "Span", "Pacer", "units_per_second",
                          "bits_per_second", "PllError", "InvalidRateError",
-                         "InvalidArgumentError", "PllOverflowError"})
-        for name in ("Follower", "FollowerConfig", "Observation", "Status", "State",
-                     "default_follower_config", "OrderError", "ConfigError", "NotAnchoredError"):
-            self.assertFalse(hasattr(pll, name), name)
+                         "InvalidArgumentError", "PllOverflowError", "Follower",
+                         "FollowerConfig", "Observation", "Status", "State",
+                         "default_follower_config", "OrderError", "ConfigError", "NotAnchoredError"})
         for fn, params in [(units_per_second, ["num", "den"]),
                            (bits_per_second, ["bits", "bits_per_unit"]),
                            (Pacer, ["rate"]), (Rate, []), (pll.Span, [])]:

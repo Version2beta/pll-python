@@ -1,12 +1,9 @@
 # pll-python — exact pacing and clock following
 
-> **Stage 1 exact pacing implemented and delivered.** Rate/Pacer/immutable lazy
-> Span are available by direct `import pll` from this root, using only the
-> standard library. Packaging and distribution are not implemented.
-> Follower and associated exports are absent and deferred; their sections below
-> remain future design promises, not implemented or verified behavior.
-> See [delivery verification](docs/verification.md) and
-> [kit operations](#kit-operations-stage-1).
+> **Stage 1 pacing delivered; Stage 2 complete Follower kit prepared as stubs.**
+> Follower behavior below is approved and privately verified, not yet delivered.
+> Standard library, direct root import; packaging is deferred.
+> See [verification](docs/stage2-verification.md) and [kit operations](#kit-operations-stage-2).
 
 This library helps audio/video, sensor, packet and device-buffer applications
 pace units on their own timeline or learn the relationship to another clock.
@@ -22,26 +19,24 @@ They work separately or together: follower trim can steer a pacer.
 | Approved | Python and Elixir ports in sibling directories, README-first, with one bounded kit at a time and author review between kits. |
 | Superseded | The initial documentation-only assignment barred kit preparation; Stage 1 preparation, README clarifications, stubs/tests and private verification are now approved. |
 | Approved | First kit: exact Rate/Pacer/immutable lazy Span, import `pll`, CPython 3.11+, standard library runtime/tests, existing pacing API/bounds/ownership/effects, retained MIT attribution in LICENSE. Useful standalone pacing; no partial Follower. |
-| Approved | Reject bool, accept int/float subclasses where that type is required. Validate all argument types, then all input envelopes, then semantics, each in signature order. Future config validation retains its field-by-field exception. |
-| Completed — Stage 1 only | Separately authorized isolated implementation and exact-segment repair; accepted sandbox source delivered to owner after review and fresh direct checks. Original kit preparation itself made no live calls. Spending/commit/discard approvals and historical commands below do not authorize another stage. |
-| Deferred — before follower kits | Follower API/config/enums, signed count baseline, precise binary64 evaluation order, source SPEC versus robust capped-gain evaluation, numerical tolerance policy and differential corpus review. No Stage 1 task assumes these are resolved. |
+| Approved | Reject bool, accept int/float subclasses where that type is required. Validate all argument types, then all input envelopes, then semantics, each in signature order. Config validation retains its field-by-field exception. |
+| Completed — Stage 1 only | Separately authorized isolated implementation and exact-segment repair; accepted sandbox source delivered to owner after review and fresh direct checks. Original kit preparation itself made no live calls. Historical Stage 1 permissions are separate from the approved Stage 2 direction. |
+| Approved | Stage 2 complete Follower, including windows/outliers/steps; no temporary unsupported exceptions. Frozen config/Observation, strict byte IntEnums, read-only ConfigError metadata, signed64 counts, strict float config and field-by-field validation. |
+| Approved | Pinned source evaluation order and robust capped products override obsolete Go SPEC dt capping. Exact classifications/boundaries; fixture-specific tolerances below. |
+| Approved | Initialize owner Git, preserve explicit Stage 1 inventory as baseline, keep `/.wtha/` privately excluded, commit verified preparation only. Later isolated loop uses the same pinned models, provider spending caps, passing commits and attempt-owned failing discards; preparation does not launch it. |
+| Deferred — Stage 3 | Broader reviewed Go differential corpus, packaging and release validation. |
 | Deferred — before release/install | Distribution name `pll-python`, registry availability/version, packaging/build backend, other interpreters, release automation. No backend or installable distribution exists. |
 | Deferred — before affected product work | CLI, simulator product, benchmarks and real-device integration. |
 
-**Current gate:** Stage 1 is delivered; stop for author review before any Follower
-work. No further loop or model call is authorized by this delivery. Owner remains
-without a Git repository; committed implementation history is retained on branch
-`stage1-exact-pacing` at `/tmp/pll-python-stage1-run.RdLnsJ/implementation`, HEAD
-`11ac05ab686810a73303949cf2c166bafa48f981`. Existing `.wtha/` is preserved;
-no owner Git setup, staging, ignore changes, installs, remotes or mutation of
-`../pll` were needed. Any later owner Git setup requires explicit review of
-`.wtha/`, without discarding or silently staging it.
+**Current gate:** review the verified Stage 2 kit before launching any live loop.
+Owner branch `stage2-follower` retains Stage 1 baseline/provenance; `.wtha/` is
+private via `.git/info/exclude` and is never part of kit inventory or commits.
+The pinned Go tree remains read-only. No remote/install is authorized here.
 
-**Local implementation freedom:** private helpers, exact-integer algorithms,
-internal layouts and segment sharing within the protected immutable value seam,
-provided public results, bounds, ownership, laziness and effects stay specified.
-Do not add dependencies, packaging or follower exports. New contract changes
-block affected work and require author review; notes alone do not pause the runner.
+**Local implementation freedom:** private helpers and state layouts in new follower
+implementation files; completed pacing modules and complete seams are protected.
+No dependencies, public API expansion or altered numerical/classification contract.
+Material contract changes block the run and return for author review.
 
 ## Provenance, parity and non-goals
 
@@ -72,7 +67,7 @@ clock tests are in scope; shipping a simulator/CLI is deferred.
 
 ## Prerequisites and future installation
 
-Approved Stage 1 baseline: CPython 3.11+ with IEEE-754 binary64 `float` and Python
+Approved baseline: CPython 3.11+ with IEEE-754 binary64 `float` and Python
 arbitrary-precision integers. No runtime dependencies, credentials, environment
 configuration or configuration files. All configuration is explicit arguments;
 there is no configuration-precedence system.
@@ -84,7 +79,7 @@ Python environment; do not run it now. Build metadata/backend does not exist yet
 and its prerequisites remain to be selected. No registry install command is
 promised, and the recommended name has not been checked or published. Stage 1
 pacing examples run directly from this project root without installation or
-third-party packages; follower examples remain future requirements.
+third-party packages; follower examples are Stage 2 acceptance requirements.
 
 ## First useful example (delivered Stage 1)
 
@@ -107,7 +102,7 @@ slot 1200 is due. Slot 1201 has exact time `1201 * 10**9 / 48000`, whose
 ceiling is 25,020,834 ns. A late call produces backlog rather than silently
 losing work. The caller chooses to process it, cap each batch, or skip it.
 
-## Public API (pacing approved; follower deferred finished-tool surface)
+## Public API (approved finished-tool surface)
 
 Signatures use ordinary Python annotations; `Iterator` is from `collections.abc`.
 Methods not shown as properties are called methods. No async or blocking API.
@@ -148,7 +143,8 @@ Methods not shown as properties are called methods. No async or blocking API.
 unknown-value string behavior, constructing either enum with any other byte
 integer 0..255 is permitted as an unnamed value: `str(Status(9)) == "Status(9)"`
 and `str(State(9)) == "State(9)"`. Unknown statuses are never emitted by the
-library. Values outside the byte domain raise `ValueError`.
+library. Values outside the byte domain raise `ValueError`. Bool and non-int construction
+raise `TypeError`, even if numerically equal to a member; int subclasses are accepted.
 
 ### Types, bounds and exceptions
 
@@ -158,8 +154,8 @@ Rate terms and slot/count/cap/keep arguments are integers in 0..U; valid rate
 terms and claim/cap counts must be positive. Pacer times supplied by the caller
 must fit signed 64-bit ns, then must be nonnegative. Follower local/now times
 and remote ticks may be negative but must fit signed 64-bit. Config duration
-fields fit signed 64-bit; step/lock counts also use signed 64-bit (a proposed
-64-bit Go compatibility baseline, rather than a platform-dependent Go `int`).
+fields fit signed 64-bit; step/lock counts also use signed 64-bit (the approved
+64-bit compatibility baseline, rather than a platform-dependent Go `int`).
 Trim inputs fit signed 64-bit, then must lie strictly between ±10**12.
 Internal intermediate integer products are unbounded and must not overflow.
 
@@ -167,7 +163,7 @@ Validation checks **all argument types**, then **all input envelopes**, then
 semantics; within each phase use signature order. Wrong object/type arguments
 raise `TypeError`; `bool` is rejected. `int` subclasses are accepted for integer
 arguments; `float` subclasses are accepted where float is required. The three
-future float config fields require Python `float`, not integer coercion. Config
+float config fields require Python `float`, not integer coercion. Config
 retains the field-by-field exception below. Thus `units_per_second(-1, "x")`
 raises TypeError, while `units_per_second(0, 2**64)` and `due(-1, 2**64)` raise
 OverflowError before zero/negative semantic errors. An integer outside its input envelope
@@ -308,10 +304,19 @@ is binary64 ns. Hold anchor as integer `I0` plus binary64 fraction `frac`, remot
 anchor `R0`, and offset y. Initially unanchored, y=0, jitter=0, acquiring.
 
 ```text
-predicted(r) = I0 + frac + (r-R0)*Pn/(1+y)
-e = local - predicted(r)           # positive means arrived late
+displacement(r) = ((ticks*Pn)/(1+y)) + frac
+e = nanos_between(local,I0) - displacement(r)
 remote speed = nominal * (1+y)
 ```
+
+Here ticks=nanos_between(r,R0): this helper subtracts integers before conversion
+when signed64 fits, otherwise subtracts the separately converted float operands.
+Never form absolute predicted time as a float. Pn=(float(den)*1e9)/float(num),
+wn=(2*pi)*bandwidth; preserve these groupings and the gain groupings below,
+without FMA/reassociation. remote uses ((ns-frac)*(1+y))/Pn. Positive infinite
+products are permitted only before the x/kp min caps. Do not compute 2*damping
+before multiplying x, nor cap dt before multiplying wn.
+
 
 Compute integer differences before converting to float when they fit signed
 64-bit, preserving small differences at huge absolute times. If a difference
@@ -362,7 +367,7 @@ Let e be its unrounded binary64 phase error in ns.
   x = min(0.5, wn*dt)
   kp = min(1, 2*(damping*x))
   y_new = clamp(y - (x*x/dt)*e/1e9, -max_offset_ppm*1e-6, +max_offset_ppm*1e-6)
-  v = (predicted_old(remote)-I0) + kp*e
+  v = displacement_old(remote) + kp*e
   whole = round_away(v)
   I0_new = I0 + whole; frac_new = v-whole; R0_new = remote
   ```
@@ -496,14 +501,13 @@ backwards input, so choose clocks/adapters accordingly.
 Build/install/test tools are different: Python may write `__pycache__`, pip can
 write environment/build/cache files, tests consume CPU and may write controlled
 fixture/cache outputs. None of these are promised library runtime effects.
-No network or credentials are required by the proposed deterministic checks.
+No network or credentials are required by the deterministic checks.
 
-## Deterministic verification contract (Stage 1 checks; follower future)
+## Deterministic verification contract (Stage 2 preparation)
 
 Use standard-library `unittest` with source-named tests: rate, pacer, span,
-follower_config, follower, models, differential and README examples. Stage 1
-supplies pacing tests and hand-derived fixtures; follower checks remain future
-requirements. Commands from the project root (29 Stage 1 tests):
+follower_config, follower, models, differential and README examples. Stage 1 pacing checks are retained; Stage 2 adds complete follower checks.
+Commands from the project root (stubs intentionally fail follower checks):
 
 ```sh
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v
@@ -535,23 +539,26 @@ Acceptance must cover:
 4. Absolute anchors beyond 2**53 ns, positive/negative half ties, wide
    displacements that cancel back into range, precision over long synthetic
    runs, clock-rate drift, jumps, noise and outage recovery; no real sleeping.
-5. Review-approved differential fixture corpus from the pinned Go public API,
+5. Deferred Stage 3: review-approved differential fixture corpus from the pinned Go public API,
    generated offline in a separately authorized temporary harness, never by
    changing the Go repo. Store integers as decimal strings, floats as binary64
    encodings, operations/results/errors and source revision. Replay each port
    against the same corpus and independent oracles; two ports agreeing is not
    an independent proof. Investigate disagreements against equations/tests.
 
-Proposed numerical acceptance: integer pacer results, categories, statuses,
+Approved fixture-specific numerical acceptance: integer pacer results, categories, statuses,
 state, exact hand-derived boundary mappings and saturation are exact. For
-moderate follower-model fixtures mirroring source differential tests, error and
-mapping differences <=1 ns and absolute offset difference <=1e-12; jitter
+our moderate independent-model fixture, error/local differences <=1 ns and remote
+differences <=1 tick and absolute offset difference <=1e-12; jitter
 fixtures allow <=2 ns. Each fixture must identify applicable tolerance and
 rounding boundary. Do not apply these tolerances to hide classification errors
 or relax exact boundary fixtures. Extreme-gain fixtures need high-precision
 expected capped gains and explicitly reviewed tolerances. Bit-for-bit float
-identity and arbitrary wide-extrapolation accuracy are not promised. These
-limits are proposed compatibility policy, not measured port results.
+identity and arbitrary wide-extrapolation accuracy are not promised. The extreme-gain source matrix (bandwidth min-subnormal/1e-300/0.1/max,
+damping min-subnormal/sqrt(2)/2/max, phases 0/±100ns at one second) uses
+Decimal precision >=256 bits: local <=1ns and offset <=1e-20 only for that
+fixture, not universally. Classification is never relaxed. No Go corpus is
+claimed by this kit.
 
 ## Readme-loop stages and current limitations
 
@@ -559,88 +566,37 @@ Prepare **one bounded kit at a time**, with authoritative README protected,
 subordinate supporting spec and promise/check map, non-vacuously failing stubs,
 private passing reference and runner-judge checks. Return for review between stages.
 
-1. **Delivered exact pacing:** Rate/Pacer/Span, pacing exceptions/envelopes,
-   two pacing example blocks, independent rational oracle, extreme bounds and
-   lazy spans. Seven ordered tasks, 29 tests, including the exact stored-segment
-   regression. Owner direct checks pass; unchanged runner checks pass in the
-   committed sandbox. No follower exports are present.
-2. **Deferred clock mapping and loop:** config, anchoring/order, mapping/rounding,
-   gains, accepted samples, lock/jitter/holdover/reset, transactional overflow.
-   Resolve follower decisions before tasks; no partial follower claimed complete.
-3. **Deferred complete follower parity:** windows/outliers/steps, edge/retry cases,
-   deterministic scenarios, reviewed differential corpus, all future examples,
-   regression and packaging decisions. Release suitability needs separate review.
+1. **Delivered pacing:** retain all 29 behavioral checks; only the obsolete
+   nine-export/absent-follower assertion changes for the approved surface.
+2. **Prepared complete Follower:** config, maps, full loop/windows/outliers/steps,
+   numerical and rollback boundaries, all README examples and runtime checks.
+   Private reference feasibility is not owner implementation delivery.
+3. **Deferred:** broader reviewed Go corpus, packaging/release and real devices.
 
-**Evidence:** see [the verification record](docs/verification.md) for fresh owner
-delivery checks and the separately retained historical preparation/repair records.
-Direct root import is verified, not installed-package compatibility, all-platform
-support, performance, release readiness or real-device behavior. Bounded isolated
-runner history is not a general model-availability guarantee. This is the first
-Python stage; upstream Go results are not port evidence. The stage's fixture is
-hand-derived, not the deferred Go differential corpus.
+## Kit operations (Stage 2)
 
-## Kit operations (Stage 1)
+Authority: README; subordinate contract: SPEC.md. Complete protected public seams:
+`pll/__init__.py`, `_errors.py`, `_values.py`, `_follower_values.py`; all delivered
+pacing modules are also protected. Implement only `_follower.py` and new private
+follower helpers. PROGRESS.md stays writable. All docs/tests/fixtures/scripts,
+LICENSE and ignores are protected. No private reference is in the kit inventory.
 
-This section is operator workflow, not library runtime behavior. Authoritative
-contract: this README; subordinate details and promise/check map: [SPEC.md](SPEC.md).
-Coder instructions: PROMPT.md; writable findings: PROGRESS.md. Complete files:
-`pll/__init__.py`, `pll/_errors.py`, `pll/_values.py`. Implementation seams:
-`pll/_rate.py`, `pll/_span.py`, `pll/_pacer.py`. Tests/fixtures/docs, every README,
-complete files, LICENSE, .gitignore and all scripts were protected during coder
-runs. The accepted production implementation, not the private feasibility
-reference, is now delivered. README/verification updates are post-loop supervisor
-documentation maintenance, not coder changes. PROGRESS.md is copied verbatim from
-the accepted sandbox and retains historical per-attempt wording; this README and
-the verification record describe current delivery. No packaging backend is selected.
-
-### Apply and check (no model)
-
-The implemented first stage is already delivered in this directory; no
-unzip/overlay is needed. Preserve existing files, including `.wtha/`. For a
-separate fresh source copy after review, copy **only** the inventory in
-`docs/kit-files.txt` from this directory into an empty destination:
+The overlay is already applied to actual delivered Stage 1, not its reference.
+For an isolated copy, choose an empty destination outside this tree and copy
+only the explicit inventory (never `.wtha/`, `.git/`, `.loop/` or private evidence):
 
 ```sh
-# Run from the prepared kit root; set DEST to an owner-chosen empty directory.
-# DEST must already exist, be empty, and not be inside this kit.
 tar -cf - -T docs/kit-files.txt | (cd "$DEST" && tar -xf -)
-```
-
-Prerequisites: CPython 3.11+, Bash, Git, jq, and timeout or gtimeout, all locally
-available. No installation, network or key is needed for checks. Direct checks
-work without Git and pass on the delivered implementation:
-
-```sh
+# In DEST: initialize an authorized non-main branch and commit this inventory.
 PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/check_tree.py
-PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/run_tests.py all 29
-```
-
-The owner has no Git repository, so the unchanged runner's Git-based `.loop/`
-ignore check cannot honestly run here. Do not initialize Git or change ignores
-just to bypass that gate. Fresh `--check` validation instead ran in the committed
-sandbox above, whose implementation, tests, scripts and other protected files
-match owner bytes except the documented post-loop README/verification updates:
-
-```sh
-cd /tmp/pll-python-stage1-run.RdLnsJ/implementation
+PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/run_tests.py tests.stage_suite 4
 PYTHONDONTWRITEBYTECODE=1 bash scripts/loop.sh --check
 ```
 
-`--check` invokes no coder or formatter; it checks every task plus earlier
-tasks, syntax/whitespace and protection inventory. It needs local Git for
-`.loop/` ignore checking and writes logs only there. The delivered revision
-prints seven `pass` rows. Read the 29 explicit stdout PASS observations and
-exact count, not exit status alone. There is no automatic formatter; the
-non-writing whitespace/syntax check is the formatting gate.
-
-### Historical isolated launch commands — not a new authorization
-
-Original preparation withheld launch; a later separately authorized isolated
-implementation and bounded repair produced the committed revision above. Exact
-skill-pinned model settings are retained below as historical operator evidence,
-not commands to run for delivery or authorization to start a future kit. Bounds
-and actual attempts are recorded in the external run/repair results linked from
-verification. No model calls were made during owner delivery:
+Prerequisites CPython 3.11+, Bash, Git, jq, timeout/gtimeout are local; no install.
+Prior T1–T6 pacing checks must pass; new tasks/final intentionally fail on stubs.
+Review docs/stage2-verification.md before live work. **Do not launch during
+preparation.** The later separately reviewed isolated loop retains exact commands:
 
 ```sh
 CHEAP_CMD='pi --provider anthropic --model claude-haiku-5-5 --thinking high --print --no-session' \
@@ -649,19 +605,10 @@ STRONGEST_CMD='pi --provider openai-codex --model gpt-6.1-sol --thinking max --p
 bash scripts/loop.sh
 ```
 
-No model substitutions are authorized. The unchanged runner requires a clean
-non-main/master branch, automatically commits passing attempts, and discards
-failing attempt-owned changes. Existing user files must not be discarded to
-pass the gate. Default bounds: MAX_ITER=60, MAX_ATTEMPTS=4, ITER_SECONDS=1200,
-JUDGE_TIMEOUT=300; positive integer owner overrides only. Protected paths
-constrain accepted diffs, not process access: use an isolated credential-limited
-environment and provider spending limits before live work.
-
-Commits stay on the branch with `Coder-Command:` trailers. `.loop/` contains
-prompts, per-task stdout/stderr, model logs, discarded diffs/notes and loop.log;
-root `STOP` names a task that exhausted its attempt limit. Review logs and
-changes for shortcuts, not just green output. Newly discovered contract changes
-require the operator to stop/withhold a run for author review; PROGRESS.md is
-not an automatic pause mechanism. Original preparation ran no live loop; later
-isolated implementation/repair did. Owner delivery made no model calls or new
-commits. Stop at author review; do not chain follower kits.
+No substitutions. Provider spending caps and isolated credentials are required.
+Default MAX_ITER=60, MAX_ATTEMPTS=4, ITER_SECONDS=1200, JUDGE_TIMEOUT=300;
+positive integer owner overrides only. Runner requires a clean non-main branch,
+commits passing attempts and discards only attempt-owned failures. Preserve user
+work. Commits include Coder-Command trailers; `.loop/` stores logs/prompts/diffs/
+notes; root STOP names an exhausted task. New decisions require operator stop;
+progress notes do not pause the runner. Return to review; do not chain stages.

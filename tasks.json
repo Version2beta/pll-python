@@ -12,7 +12,8 @@
     "^fixtures/.*$",
     "^tests/.*$",
     "^scripts/.*$",
-    "^pll/(__init__|_errors|_values)\\.py$"
+    "^pll/(__init__|_errors|_values)\\.py$",
+    "^pll/(_rate|_span|_pacer|_follower_values)\\.py$"
   ],
   "tasks": [
     {
@@ -99,9 +100,77 @@
       "tier": "hard"
     },
     {
-      "id": "T7",
+      "id": "F1",
+      "title": "tests.test_follower_config.ConfigTests",
+      "test": "PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/run_tests.py tests.test_follower_config.ConfigTests 2",
+      "expect": [
+        "^PASS tests\\.test_follower_config\\.ConfigTests\\.test_defaults_values_enums_errors$",
+        "^PASS tests\\.test_follower_config\\.ConfigTests\\.test_field_by_field_validation$",
+        "^PASS COUNT 2$"
+      ],
+      "tier": "hard"
+    },
+    {
+      "id": "F2",
+      "title": "tests.test_follower.MappingTests",
+      "test": "PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/run_tests.py tests.test_follower.MappingTests 2",
+      "expect": [
+        "^PASS tests\\.test_follower\\.MappingTests\\.test_anchor_ties_large_origins_and_wide_cancellation$",
+        "^PASS tests\\.test_follower\\.MappingTests\\.test_validation_order_and_failure_retry$",
+        "^PASS COUNT 2$"
+      ],
+      "tier": "hard"
+    },
+    {
+      "id": "F3",
+      "title": "tests.test_follower.LoopTests",
+      "test": "PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/run_tests.py tests.test_follower.LoopTests 3",
+      "expect": [
+        "^PASS tests\\.test_follower\\.LoopTests\\.test_lock_jitter_holdover_reset$",
+        "^PASS tests\\.test_follower\\.LoopTests\\.test_threshold_outlier_first_reference_step_and_order$",
+        "^PASS tests\\.test_follower\\.LoopTests\\.test_saturation_and_atomic_overflow_retry$",
+        "^PASS COUNT 3$"
+      ],
+      "tier": "hard"
+    },
+    {
+      "id": "F4",
+      "title": "tests.test_follower.WindowTests",
+      "test": "PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/run_tests.py tests.test_follower.WindowTests 2",
+      "expect": [
+        "^PASS tests\\.test_follower\\.WindowTests\\.test_half_open_signed_minimum_tie_and_last_accepted$",
+        "^PASS tests\\.test_follower\\.WindowTests\\.test_postflush_mapping_and_failed_flush_retry$",
+        "^PASS COUNT 2$"
+      ],
+      "tier": "hard"
+    },
+    {
+      "id": "F5",
+      "title": "tests.test_follower_models.ModelTests",
+      "test": "PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/run_tests.py tests.test_follower_models.ModelTests 3",
+      "expect": [
+        "^PASS tests\\.test_follower_models\\.ModelTests\\.test_moderate_independent_model$",
+        "^PASS tests\\.test_follower_models\\.ModelTests\\.test_decimal_extreme_finite_gains$",
+        "^PASS tests\\.test_follower_models\\.ModelTests\\.test_offset_and_jitter_saturation$",
+        "^PASS COUNT 3$"
+      ],
+      "tier": "hard"
+    },
+    {
+      "id": "F6",
+      "title": "tests.test_follower_workflows.WorkflowTests",
+      "test": "PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/run_tests.py tests.test_follower_workflows.WorkflowTests 2",
+      "expect": [
+        "^PASS tests\\.test_follower_workflows\\.WorkflowTests\\.test_readme_and_cross_pacer$",
+        "^PASS tests\\.test_follower_workflows\\.WorkflowTests\\.test_import_and_runtime_effects$",
+        "^PASS COUNT 2$"
+      ],
+      "tier": "hard"
+    },
+    {
+      "id": "F7",
       "title": "Whole tree: syntax, whitespace, protection inventory, every test green",
-      "test": "PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/check_tree.py && PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/run_tests.py all 29",
+      "test": "PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/check_tree.py && PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/run_tests.py all 43",
       "expect": [
         "^PASS SYNTAX AND WHITESPACE$",
         "^PASS tests\\.test_rate\\.RateTests\\.test_reduction_and_strings$",
@@ -133,7 +202,21 @@
         "^PASS tests\\.test_models\\.ModelTests\\.test_due_neighbors_against_formula$",
         "^PASS tests\\.test_readme\\.ReadmeTests\\.test_pacing_examples$",
         "^PASS tests\\.test_effects\\.EffectsTests\\.test_no_runtime_effects_and_source_mutation$",
-        "^PASS COUNT 29$"
+        "^PASS tests\\.test_follower_config\\.ConfigTests\\.test_defaults_values_enums_errors$",
+        "^PASS tests\\.test_follower_config\\.ConfigTests\\.test_field_by_field_validation$",
+        "^PASS tests\\.test_follower\\.MappingTests\\.test_anchor_ties_large_origins_and_wide_cancellation$",
+        "^PASS tests\\.test_follower\\.MappingTests\\.test_validation_order_and_failure_retry$",
+        "^PASS tests\\.test_follower\\.LoopTests\\.test_lock_jitter_holdover_reset$",
+        "^PASS tests\\.test_follower\\.LoopTests\\.test_threshold_outlier_first_reference_step_and_order$",
+        "^PASS tests\\.test_follower\\.LoopTests\\.test_saturation_and_atomic_overflow_retry$",
+        "^PASS tests\\.test_follower\\.WindowTests\\.test_half_open_signed_minimum_tie_and_last_accepted$",
+        "^PASS tests\\.test_follower\\.WindowTests\\.test_postflush_mapping_and_failed_flush_retry$",
+        "^PASS tests\\.test_follower_models\\.ModelTests\\.test_moderate_independent_model$",
+        "^PASS tests\\.test_follower_models\\.ModelTests\\.test_decimal_extreme_finite_gains$",
+        "^PASS tests\\.test_follower_models\\.ModelTests\\.test_offset_and_jitter_saturation$",
+        "^PASS tests\\.test_follower_workflows\\.WorkflowTests\\.test_readme_and_cross_pacer$",
+        "^PASS tests\\.test_follower_workflows\\.WorkflowTests\\.test_import_and_runtime_effects$",
+        "^PASS COUNT 43$"
       ],
       "tier": "hard"
     }
