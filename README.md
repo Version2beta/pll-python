@@ -1,8 +1,8 @@
 # pll-python — exact pacing and clock following
 
-> **Stages 1 and 2 delivered. Stage 3 preparation: corpus and packaging.**
-> Runtime production bytes remain unchanged; replay and metadata are implementation tasks.
-> See [Stage 3 operations](#stage-3-preparation-and-kit-operations).
+> **Stages 1–3 delivered: pacing, clock following, corpus and local packaging.**
+> Stage 1/2 runtime production bytes remain unchanged. Local distribution version: 0.1.0.
+> See [Stage 3 verification](docs/stage3-verification.md); no registry release is claimed.
 
 This library helps audio/video, sensor, packet and device-buffer applications
 pace units on their own timeline or learn the relationship to another clock.
@@ -28,16 +28,17 @@ They work separately or together: follower trim can steer a pacer.
 | Deferred | Registry availability, publishing, release automation and devices; none performed by this kit. |
 | Deferred — before affected product work | CLI, simulator product, benchmarks and real-device integration. |
 
-**Current gate:** Stage 3 preparation only on `stage3-verification`; no live
-implementation loop or provider calls until parent review. Stage 1/2 production
-is protected and must remain byte-identical. Disagreements stop work for review,
-not contract changes or tolerance relaxation. Private runtime is excluded and
-never copied/staged. Pinned upstream remains read-only.
+**Current gate:** Stage 3 delivered on `stage3-verification` after independent
+acceptance and fresh owner verification. Stop for author review before any next
+stage; no further model/provider calls or publishing are authorized here.
+Stage 1/2 production and preceding 43 tests remain byte-identical. Disagreements
+stop work for review, not contract changes or tolerance relaxation. Private
+runtime is excluded and never copied/staged; pinned upstream remains read-only.
 
-**Local implementation freedom:** replay algorithms only in
-`scripts/replay_corpus.py`; setuptools metadata only in `pyproject.toml`.
-No new runtime module, API, dependency, backend, release or product decision.
-PROGRESS.md remains writable. All complete artifacts/harness/tests are protected.
+**Delivered scope:** replay in `scripts/replay_corpus.py` and setuptools metadata
+in `pyproject.toml`, with no new runtime module, API or dependency. Protected
+artifacts/harness/tests and contracts are unchanged; kit write permissions below
+are historical, not an invitation to start another implementation loop.
 
 ## Provenance, parity and non-goals
 
@@ -66,12 +67,14 @@ The Go `cmd/pllpace`, `cmd/pllsim`, UDP tests, full simulator and benchmarking
 commands are excluded from initial port scope. Small deterministic synthetic
 clock tests are in scope; shipping a simulator/CLI is deferred.
 
-## Prerequisites and installation (Stage 3 promise)
+## Prerequisites and installation (local 0.1.0 distribution)
 
 CPython 3.11+ with binary64 float, unbounded integers; stdlib-only runtime.
 Distribution `pll-python` 0.1.0 imports as `pll`. No dependencies/entry points.
-Installed-use promise: `python -m pip install --no-index --no-deps WHEEL_PATH`
-in a disposable environment, after the external build procedure below.
+Install a locally built wheel with
+`python -m pip install --no-index --no-deps WHEEL_PATH` in a disposable
+environment. Build commands appear below; verified preserved artifact paths
+and hashes are recorded in [delivery evidence](docs/stage3-verification.md).
 No registry availability or publication is claimed. Direct root import remains
 available. Build tools are not runtime dependencies.
 
@@ -502,7 +505,7 @@ No network or credentials are required by the deterministic checks.
 Use standard-library `unittest` with source-named tests: rate, pacer, span,
 follower_config, follower, models, differential and README examples. Stage 1 pacing checks are retained; Stage 2 adds complete follower checks.
 Historical Stage 2 commands from the project root (43 tests on that baseline;
-Stage 3 adds intentionally failing replay/metadata checks):
+Stage 3 now passes 50 tests, including seven corpus checks):
 
 ```sh
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v
@@ -565,7 +568,9 @@ private passing reference and runner-judge checks. Return for review between sta
 2. **Delivered complete Follower:** config, maps, full loop/windows/outliers/steps,
    numerical and rollback boundaries, all README examples and runtime checks.
    Accepted sandbox bytes are delivered to owner; see [delivery evidence](docs/stage2-verification.md).
-3. **Preparation:** bounded Go corpus and local packaging; release/devices excluded.
+3. **Delivered:** bounded Go corpus (84 cases, 2299 rows) and local wheel/sdist
+   packaging; release/registry/devices excluded. Approved per-fixture tolerances
+   above remain bounded, never classification relaxations.
 
 ## Local verification and historical kit operations (Stage 2)
 
@@ -613,15 +618,44 @@ work. Commits include Coder-Command trailers; `.loop/` stores logs/prompts/diffs
 notes; root STOP names an exhausted task. New decisions require operator stop;
 progress notes do not pause the runner. Return to review; do not chain stages.
 
-## Stage 3 preparation and kit operations
+## Stage 3 local verification and historical kit operations
 
+Current offline owner checks (50 tests, all 15 judge gates; externally pinned
+build environment required for distribution checks):
+
+```sh
+export PLL_BUILD_PYTHON="/absolute/external/build-env/bin/python"
+PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/run_tests.py all 50
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v
+PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/check_tree.py
+PYTHONDONTWRITEBYTECODE=1 bash scripts/loop.sh --check
+PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/check_distribution.py
+```
+
+To preserve local artifacts, copy only README.md, LICENSE, pyproject.toml,
+MANIFEST.in and the tracked pll/*.py into a fresh external SOURCE_COPY, then
+build there (never in the accepted checkout):
+
+```sh
+cd "$SOURCE_COPY"
+"$PLL_BUILD_PYTHON" -I -m build --no-isolation --sdist --wheel --outdir "$DIST_DIR"
+```
+
+SOURCE_COPY and DIST_DIR must be absolute external paths. The build environment
+must already contain the exact pins in scripts/build-requirements.txt; no
+network or prerequisite provisioning is needed for these checks. The judge
+builds and installs in disposable directories and deletes its own archives.
+
+The remaining operations in this section are **historical preparation and
+accepted isolated implementation**, not current launch/provisioning requests.
 Apply this committed branch over clean delivered baseline
 `878a652cf27c7587055ed7fe81e15b2fa5723168`, preserving user work. For isolated
 copies use the explicit `docs/kit-files.txt` inventory and historical tar command
 above; never copy private runtime, Git, logs, or external reference evidence.
 Prior checks remain `python3 -B scripts/run_tests.py all 43` **on baseline**;
 in this kit select unchanged T1–T6/F1–F6 task commands for the same 43 tests.
-The new discovery total is 50; replay and metadata are deliberately failing stubs.
+At preparation the new discovery total was 50 and replay/metadata were
+intentionally failing stubs; the accepted delivery now passes all 50.
 
 Build prerequisites are provisioned separately, never by tests/judge:
 
@@ -658,7 +692,8 @@ No timestamps enter payload. Go is provenance, not authority; Python-only type,
 exception, enum, config naming, iterator and zero-value differences are explicit
 in SPEC. Broader coverage is not exhaustive proof or nanosecond-wide accuracy.
 
-No live launch during preparation. After review only, same pinned model commands:
+Historical isolated launch after review used the same pinned model commands
+below. It is complete; do not rerun or start a next stage from these records:
 
 ```sh
 CHEAP_CMD='pi --provider anthropic --model claude-haiku-5-5 --thinking high --print --no-session' \
@@ -672,4 +707,5 @@ ITER_SECONDS=1200, JUDGE_TIMEOUT=300; no substitutions. Passing attempts commit
 on the authorized branch, failing attempts discard only attempt-owned changes.
 `.loop/` contains prompts/logs/diffs/notes; root STOP names exhausted task.
 Progress notes are not an automatic stop. Return for parent review after kit.
-See [verification](docs/stage3-verification.md) for observed versus promised work.
+See [verification](docs/stage3-verification.md) for fresh owner delivery evidence
+and clearly separated historical preparation records.

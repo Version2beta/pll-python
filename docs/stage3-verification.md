@@ -1,4 +1,119 @@
-# Stage 3 preparation evidence
+# Stage 3 — final owner delivery evidence
+
+## Delivered status and provenance
+
+Stage 3 is delivered on owner branch `stage3-verification`, following parent
+acceptance of the independent reviewer (no issues). Accepted sandbox:
+`/tmp/pll-stage3-implementation.Uf7owo/checkout`, branch `stage3-implementation`,
+HEAD `ddfc6b3e75731ae5b63663e616a6daa76b349b27`, prepared owner baseline
+`4677f227daafbc0ba266df5bada975f6ea9c6023`.
+Owner implementation commit: `50ae1391d1b8e4661c5ad9719883c307d0e5cf23`.
+Only scripts/replay_corpus.py, pyproject.toml and PROGRESS.md were transferred;
+each was verified byte-identical. No merge/cherry-pick or protected-code changes.
+The companion documentation commit updates README status and this record only.
+No next stage is started; author review remains the next gate.
+
+Accepted source/operator evidence: `/tmp/pll-stage3-implementation.Uf7owo/REVIEW.md`.
+Independent review:
+`/Users/rob/.pi/agent/sessions/--Users-rob-Development-pll-python--/subagent-artifacts/c70d4d92-8308-47d4-9c8e-735ea1d74d9a_reviewer_output.md`.
+Fresh owner evidence and preserved artifacts (external, not in Git):
+`/Users/rob/Development/pll-stage3-delivery-evidence-20261121-144326`.
+
+## Fresh actual owner checks
+
+CPython 3.15.0 (`python3`) and CPython 3.11.15 (`python3.11`) each passed:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/run_tests.py all 50
+PYTHONDONTWRITEBYTECODE=1 python3 -B -m unittest discover -s tests -v
+PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/check_tree.py
+PYTHONDONTWRITEBYTECODE=1 bash scripts/loop.sh --check
+PYTHONDONTWRITEBYTECODE=1 python3 -B -c 'import sys; sys.path[:0]=["scripts", "."]; from replay_corpus import replay_file; print("PASS REPLAY", replay_file("fixtures/go-public-api.json"))'
+```
+
+`validate.py` records exact commands/environment and source SHA256 snapshots
+before/after every command in validation-results.json and ten snapshot files.
+For the second pass, an external PATH shim names python3.11 as python3; runner
+and task commands remain unchanged. Every source snapshot is identical around
+checks: 50 explicit tests, discovery 50, syntax/whitespace/protection inventory,
+all 15 unchanged judge gates and direct replay 2299 rows, on both interpreters.
+Prior T1–T6/F1–F6 gates still account for 43 tests; seven corpus tests are new
+in preparation, not changed during delivery. No tests/fixtures/guards/contracts
+were edited. baseline-preservation.json proves all 22 production/prior-test
+paths byte-identical to `878a652cf27c7587055ed7fe81e15b2fa5723168`.
+owner-before.json records the clean tracked inventory; sandbox-before/after.json
+and clean status prove the accepted sandbox stayed unchanged at its known HEAD.
+No private runtime, upstream source, remote, provider or network was accessed.
+
+Corpus remains 84 cases, 2202 operations, 2299 checked result rows; SHA256
+`0a57a1d7ef6ed4b86745b00bdfe420cb005a1df87919851300efe06a0f9e853b`.
+No fresh Go regeneration was performed during delivery. Historical regeneration
+evidence below is distinct from fresh owner replay. Categories/status/state/trim
+remain exact; only the approved per-fixture moderate and extreme numerical fields
+have bounded tolerances specified by README/SPEC. No tolerance was relaxed.
+
+## Fresh local distribution and preserved artifacts
+
+Existing external pinned build interpreter (reused, not provisioned):
+`/tmp/pll-stage3.I7Kron/build-env/bin/python`, CPython 3.11.15.
+Verified versions: build 1.6.1, setuptools 84.2.1, wheel 0.48.0,
+packaging 26.3, pyproject_hooks 1.3.3. No runtime dependencies/entry points.
+
+Both judge passes freshly built wheel and sdist, rebuilt wheel from sdist,
+inspected metadata/manifests/source bytes and installed offline/no-deps in fresh
+external environments. Separate preservation command:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 python3 -B "/Users/rob/Development/pll-stage3-delivery-evidence-20261121-144326/preserve_distribution.py"
+```
+
+That external harness runs the unchanged check_distribution.main(), replacing
+only its TemporaryDirectory context with a new persistent external workspace.
+The exact explicit source copy and build/install/provenance/README checks are
+therefore retained, not recreated approximately. distribution-final.log records
+build commands (`-I -m build --no-isolation --sdist --wheel --outdir ...`, then
+`--wheel` from unpacked sdist), manifests, and all four installed import paths.
+Both direct and sdist-rebuilt wheels were installed `-I -m pip install
+--no-index --no-deps` under 3.11 and 3.15 outside checkout, with PYTHONPATH unset;
+`-I` probes assert site-packages provenance and execute all three README Python
+fences. Fresh installed README examples and manifests pass after README updates.
+Wheel metadata README payload and sdist README/source bytes were additionally
+verified against the final owner README and production. distribution-snapshots.json
+proves no source changes across these external builds/install checks.
+
+Preserved under `/Users/rob/Development/pll-stage3-delivery-evidence-20261121-144326/distribution-final/`:
+
+| Artifact (relative path) | SHA256 |
+| --- | --- |
+| dist/pll_python-0.1.0-py3-none-any.whl | a2761aa9cc522222e4d44ba41dbfc6d5c6343471497022c1252cf4b0e097b041 |
+| dist/pll_python-0.1.0.tar.gz | eb6bd8530b167db6122c8c2934cc2ea157b830343bab74c84ea55069b2175952 |
+| sdist-wheel/pll_python-0.1.0-py3-none-any.whl | a2761aa9cc522222e4d44ba41dbfc6d5c6343471497022c1252cf4b0e097b041 |
+
+artifacts.json records absolute paths, hashes, sizes and inspected manifests.
+These are local 0.1.0 artifacts, not registry availability or publication.
+An initial *extra* metadata-payload assertion in the external evidence harness
+failed because email.get_payload() decoded UTF-8 as ASCII replacement characters;
+using get_payload(decode=True) correctly compares raw bytes. No project source,
+judge, contract or tolerance changed. The fresh corrected preservation run passed;
+the earlier run/log is retained separately and is not delivered artifact evidence.
+
+## Limits and next gate
+
+Bounded deterministic tests/corpus and local builds do not establish exhaustive
+correctness/security, universal float accuracy, platform/device performance or
+release readiness. No publishing, registry lookup, release automation, devices,
+new provisioning, system install, provider call or next stage occurred here.
+Artifacts/evidence/build environments remain external and must be preserved by
+the operator if later needed. No build cache, wheel or evidence is staged.
+
+---
+## Historical preparation evidence (not current status or launch instructions)
+
+Everything below records earlier preparation/repair and private-reference checks.
+Statements about stubs, withheld launch, provisioning or pending review apply
+only to those historical revisions, not the accepted owner delivery above.
+
+### Stage 3 preparation evidence
 
 Preparation only; no live implementation loop/provider calls. Stage 1/2 owner
 baseline is 878a652cf27c7587055ed7fe81e15b2fa5723168. Stage 2 evidence remains
