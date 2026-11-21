@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tarfile
 import tempfile
+import tomllib
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,6 +23,18 @@ def main():
     build_python = os.environ.get('PLL_BUILD_PYTHON')
     if not build_python or not Path(build_python).is_absolute():
         raise SystemExit('set PLL_BUILD_PYTHON to externally provisioned pinned venv interpreter')
+    config = tomllib.loads((ROOT/'pyproject.toml').read_text())
+    assert config['build-system'] == {'requires':['setuptools==84.2.1','wheel==0.48.0'],
+                                      'build-backend':'setuptools.build_meta'}
+    project = config['project']
+    assert project['name']=='pll-python' and project['version']=='0.1.0'
+    assert project['requires-python']=='>=3.11' and project['readme']=='README.md'
+    assert project['license']=='MIT' and project['license-files']==['LICENSE']
+    assert project['dependencies']==[]
+    assert not any(project.get(k) for k in ('scripts','gui-scripts','entry-points','optional-dependencies','dynamic'))
+    packages = config['tool']['setuptools']
+    assert packages['packages']==['pll'] and packages['include-package-data'] is False
+    assert not packages.get('py-modules')
     env = dict(os.environ, PIP_NO_INDEX='1', PIP_DISABLE_PIP_VERSION_CHECK='1',
                PYTHONDONTWRITEBYTECODE='1')
     env.pop('PYTHONPATH', None)

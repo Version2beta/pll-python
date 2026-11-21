@@ -37,6 +37,7 @@ def generate(upstream):
     version = subprocess.check_output(['go', 'version'], env=env).decode().strip()
     with tempfile.TemporaryDirectory(prefix='pll-go-corpus-') as d:
         d = Path(d)
+        env.update(GOCACHE=str(d/'go-cache'), GOPATH=str(d/'go-path'))
         shutil.copyfile(HERE/'main.go', d/'main.go')
         (d/'go.mod').write_text('module corpus\n\ngo 1.23\nrequire github.com/version2beta/pll v0.0.0\nreplace github.com/version2beta/pll => '+str(upstream)+'\n')
         subprocess.run(['go', 'build', '-o', str(d/'harness'), '.'], cwd=d, env=env, check=True)

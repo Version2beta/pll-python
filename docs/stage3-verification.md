@@ -81,3 +81,10 @@ registry availability, universal interpreter/platform accuracy, exhaustive
 security or real-device behavior. External prerequisites must be reprovisioned
 if the disposable build environment is removed. There is no network in tests,
 judge or Go generation. Only prerequisite provisioning used the trusted index.
+
+Final hardening also asserts pyproject's explicit package inventory and backend/
+project metadata directly, preventing auto-discovery from passing accidentally.
+The final generator confines GOCACHE/GOPATH to its disposable temporary directory.
+Preliminary harness builds used Go's normal build cache; no arbitrary cache
+contents were searched/read as evidence. Final two-generation equality was
+rechecked with isolated caches, and upstream source hashes remain unchanged.
