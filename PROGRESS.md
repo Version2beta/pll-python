@@ -40,3 +40,11 @@ Stage 3 preparation repair after P1 review: complete schema guard now validates
 provenance, operation/controller domains and result shapes before replay; focused
 malformed tests run through replay_file. Production/prior tests/corpus unchanged.
 Live launch withheld pending independent re-review; no coder/model attempt.
+
+S1
+Implemented scripts/replay_corpus.py: complete schema/artifact validation, public-API replay with normalized config/errors, retained lazy spans and bounded iteration, exact categories and fixture-specific numerical tolerances, row-count checks and case/operation disagreement reproduction. Exact task command PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/run_tests.py tests.test_corpus 7 passed (PASS COUNT 7), including 2299 replay rows.
+Remaining: no S1 disagreement/blocker observed; S2/S3 untouched and not validated. Production and all protected files unchanged. Not committed or marked done.
+
+S2
+Implemented pyproject.toml with pinned setuptools.build_meta, PEP 621/639 pll-python 0.1.0 metadata, MIT license, Python >=3.11, no runtime dependencies/entry points, and explicit pll package selection with package data disabled. Exact task command PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/check_distribution.py passed (exit 0: PASS DISTRIBUTION BUILDS AND INSTALLED EXAMPLES), checking wheel/sdist manifests, production bytes, sdist rebuild and installed README examples on Python 3.11 and 3.15.
+Remaining: no S2 blocker or contract disagreement observed; S3 whole-stage gate not run. Production and all protected files unchanged. Not committed or marked done.
