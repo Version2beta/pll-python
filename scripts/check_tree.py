@@ -8,9 +8,10 @@ config = json.loads((root / "tasks.json").read_text())
 patterns = config["protected"]
 required = ["README.md", "SPEC.md", "PROMPT.md", "tasks.json", ".gitignore", "LICENSE",
             "pll/__init__.py", "pll/_errors.py", "pll/_values.py", "tests/__init__.py", "pll/_rate.py", "pll/_span.py", "pll/_pacer.py",
-            "pll/_follower_values.py"]
-required += [str(p.relative_to(root)) for folder in ("scripts", "tests", "fixtures", "docs")
-             for p in (root / folder).rglob("*") if p.is_file() and "__pycache__" not in p.parts]
+            "pll/_follower_values.py", "pll/_follower.py", "MANIFEST.in"]
+required += [str(p.relative_to(root)) for folder in ("scripts", "tests", "fixtures", "docs", "tools")
+             for p in (root / folder).rglob("*") if p.is_file() and "__pycache__" not in p.parts
+             and str(p.relative_to(root)) != "scripts/replay_corpus.py"]
 required += [str(p.relative_to(root)) for p in [root / "README.md"] + list((root / "docs").rglob("README.md"))
              if not any(part in (".git", ".loop", ".wtha") for part in p.parts)]
 for path in sorted(set(required)):

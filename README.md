@@ -1,9 +1,8 @@
 # pll-python — exact pacing and clock following
 
-> **Stage 1 pacing delivered; Stage 2 complete Follower kit prepared as stubs.**
-> Follower behavior below is approved and privately verified, not yet delivered.
-> Standard library, direct root import; packaging is deferred.
-> See [verification](docs/stage2-verification.md) and [kit operations](#kit-operations-stage-2).
+> **Stages 1 and 2 delivered. Stage 3 preparation: corpus and packaging.**
+> Runtime production bytes remain unchanged; replay and metadata are implementation tasks.
+> See [Stage 3 operations](#stage-3-preparation-and-kit-operations).
 
 This library helps audio/video, sensor, packet and device-buffer applications
 pace units on their own timeline or learn the relationship to another clock.
@@ -24,20 +23,21 @@ They work separately or together: follower trim can steer a pacer.
 | Completed — Stage 2 | Complete Follower delivered, including windows/outliers/steps; no temporary unsupported exceptions. Frozen config/Observation, strict byte IntEnums, read-only ConfigError metadata, signed64 counts, strict float config and field-by-field validation. |
 | Approved | Pinned source evaluation order and robust capped products override obsolete Go SPEC dt capping. Exact classifications/boundaries; fixture-specific tolerances below. |
 | Approved | Initialize owner Git, preserve explicit Stage 1 inventory as baseline, keep `/.wtha/` privately excluded, commit verified preparation only. Later isolated loop uses the same pinned models, provider spending caps, passing commits and attempt-owned failing discards; preparation does not launch it. |
-| Deferred — Stage 3 | Broader reviewed Go differential corpus, packaging and release validation. |
-| Deferred — before release/install | Distribution name `pll-python`, registry availability/version, packaging/build backend, other interpreters, release automation. No backend or installable distribution exists. |
+| Approved — Stage 3 | Deterministic offline pinned-Go public-API corpus and local wheel/sdist installed-use verification; preserve production and prior 43 tests, stop on disagreement. |
+| Approved — Stage 3 | Distribution `pll-python` 0.1.0, import `pll`, Python >=3.11, MIT, setuptools.build_meta, no runtime dependencies or entry points. Build-only pins and disposable external provisioning/build/install checks authorized. |
+| Deferred | Registry availability, publishing, release automation and devices; none performed by this kit. |
 | Deferred — before affected product work | CLI, simulator product, benchmarks and real-device integration. |
 
-**Current gate:** Stage 2 is delivered after independent acceptance and fresh owner
-checks; stop here for author review. Stage 3 is deferred, not authorized to launch.
-Owner branch `stage2-follower` retains Stage 1 and Stage 2 provenance; `.wtha/` is
-private via `.git/info/exclude` and is never part of kit inventory or commits.
-The pinned Go tree remains read-only. No remote/install is authorized here.
+**Current gate:** Stage 3 preparation only on `stage3-verification`; no live
+implementation loop or provider calls until parent review. Stage 1/2 production
+is protected and must remain byte-identical. Disagreements stop work for review,
+not contract changes or tolerance relaxation. Private runtime is excluded and
+never copied/staged. Pinned upstream remains read-only.
 
-**Local implementation freedom:** private helpers and state layouts in new follower
-implementation files; completed pacing modules and complete seams are protected.
-No dependencies, public API expansion or altered numerical/classification contract.
-Material contract changes block the run and return for author review.
+**Local implementation freedom:** replay algorithms only in
+`scripts/replay_corpus.py`; setuptools metadata only in `pyproject.toml`.
+No new runtime module, API, dependency, backend, release or product decision.
+PROGRESS.md remains writable. All complete artifacts/harness/tests are protected.
 
 ## Provenance, parity and non-goals
 
@@ -66,21 +66,14 @@ The Go `cmd/pllpace`, `cmd/pllsim`, UDP tests, full simulator and benchmarking
 commands are excluded from initial port scope. Small deterministic synthetic
 clock tests are in scope; shipping a simulator/CLI is deferred.
 
-## Prerequisites and future installation
+## Prerequisites and installation (Stage 3 promise)
 
-Approved baseline: CPython 3.11+ with IEEE-754 binary64 `float` and Python
-arbitrary-precision integers. No runtime dependencies, credentials, environment
-configuration or configuration files. All configuration is explicit arguments;
-there is no configuration-precedence system.
-
-After implementation and packaging approval, the **proposed local installation**
-is `python3 -m pip install --no-deps --no-build-isolation .` from this directory,
-using an already prepared build environment. This may write into the selected
-Python environment; do not run it now. Build metadata/backend does not exist yet
-and its prerequisites remain to be selected. No registry install command is
-promised, and the recommended name has not been checked or published. Stage 1
-pacing and complete Stage 2 Follower examples run directly from this project root
-without installation or third-party packages (`from pll import Follower`).
+CPython 3.11+ with binary64 float, unbounded integers; stdlib-only runtime.
+Distribution `pll-python` 0.1.0 imports as `pll`. No dependencies/entry points.
+Installed-use promise: `python -m pip install --no-index --no-deps WHEEL_PATH`
+in a disposable environment, after the external build procedure below.
+No registry availability or publication is claimed. Direct root import remains
+available. Build tools are not runtime dependencies.
 
 ## First useful example (delivered Stage 1)
 
@@ -508,7 +501,8 @@ No network or credentials are required by the deterministic checks.
 
 Use standard-library `unittest` with source-named tests: rate, pacer, span,
 follower_config, follower, models, differential and README examples. Stage 1 pacing checks are retained; Stage 2 adds complete follower checks.
-Commands from the project root (delivered implementation passes all 43 tests):
+Historical Stage 2 commands from the project root (43 tests on that baseline;
+Stage 3 adds intentionally failing replay/metadata checks):
 
 ```sh
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v
@@ -540,7 +534,7 @@ Acceptance must cover:
 4. Absolute anchors beyond 2**53 ns, positive/negative half ties, wide
    displacements that cancel back into range, precision over long synthetic
    runs, clock-rate drift, jumps, noise and outage recovery; no real sleeping.
-5. Deferred Stage 3: review-approved differential fixture corpus from the pinned Go public API,
+5. Approved Stage 3: review-approved differential fixture corpus from the pinned Go public API,
    generated offline in a separately authorized temporary harness, never by
    changing the Go repo. Store integers as decimal strings, floats as binary64
    encodings, operations/results/errors and source revision. Replay each port
@@ -558,8 +552,7 @@ expected capped gains and explicitly reviewed tolerances. Bit-for-bit float
 identity and arbitrary wide-extrapolation accuracy are not promised. The extreme-gain source matrix (bandwidth min-subnormal/1e-300/0.1/max,
 damping min-subnormal/sqrt(2)/2/max, phases 0/±100ns at one second) uses
 Decimal precision >=256 bits: local <=1ns and offset <=1e-20 only for that
-fixture, not universally. Classification is never relaxed. No Go corpus is
-claimed by this kit.
+fixture, not universally. Classification is never relaxed. Stage 3 adds a bounded corpus; see its evidence and limitations below.
 
 ## Readme-loop stages and current limitations
 
@@ -572,13 +565,13 @@ private passing reference and runner-judge checks. Return for review between sta
 2. **Delivered complete Follower:** config, maps, full loop/windows/outliers/steps,
    numerical and rollback boundaries, all README examples and runtime checks.
    Accepted sandbox bytes are delivered to owner; see [delivery evidence](docs/stage2-verification.md).
-3. **Deferred:** broader reviewed Go corpus, packaging/release and real devices.
+3. **Preparation:** bounded Go corpus and local packaging; release/devices excluded.
 
 ## Local verification and historical kit operations (Stage 2)
 
 Stage 2 delivery is complete. Run the deterministic verification commands above
 or the unchanged model-free `PYTHONDONTWRITEBYTECODE=1 bash scripts/loop.sh --check`
-from this root. No further model calls are needed. The remainder of this section
+on the Stage 2 baseline. No further Stage 2 model calls are needed. This section
 records the historical isolated kit/loop procedure, not a current launch request.
 Stage 3 requires separate author review and approval.
 
@@ -619,3 +612,64 @@ commits passing attempts and discards only attempt-owned failures. Preserve user
 work. Commits include Coder-Command trailers; `.loop/` stores logs/prompts/diffs/
 notes; root STOP names an exhausted task. New decisions require operator stop;
 progress notes do not pause the runner. Return to review; do not chain stages.
+
+## Stage 3 preparation and kit operations
+
+Apply this committed branch over clean delivered baseline
+`878a652cf27c7587055ed7fe81e15b2fa5723168`, preserving user work. For isolated
+copies use the explicit `docs/kit-files.txt` inventory and historical tar command
+above; never copy private runtime, Git, logs, or external reference evidence.
+Prior checks remain `python3 -B scripts/run_tests.py all 43` **on baseline**;
+in this kit select unchanged T1–T6/F1–F6 task commands for the same 43 tests.
+The new discovery total is 50; replay and metadata are deliberately failing stubs.
+
+Build prerequisites are provisioned separately, never by tests/judge:
+
+```sh
+python3.11 -m venv "$BUILD_ENV"
+"$BUILD_ENV/bin/python" -m pip --isolated install --index-url https://pypi.org/simple --no-cache-dir -r scripts/build-requirements.txt
+export PLL_BUILD_PYTHON="$BUILD_ENV/bin/python"
+PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/check_tree.py
+PYTHONDONTWRITEBYTECODE=1 bash scripts/loop.sh --check
+```
+
+BUILD_ENV must be an absolute external disposable path. Pins were selected from
+the trusted normal package index and checked together on Python 3.11; established
+setuptools supports PEP 639 MIT license metadata and explicit package selection.
+`build` frontend uses `--no-isolation` with the exact backend pins; packaging and
+pyproject_hooks are pinned transitive build-only requirements. No system installs.
+`check_distribution.py` copies explicit public source/metadata outside checkout,
+builds wheel/sdist, rebuilds wheel from sdist, inspects manifests and installs both
+wheels without index/dependencies into fresh 3.11 and available newer environments.
+PYTHONPATH is unset and `-I` checks installed import provenance and all README
+Python examples. Builds/install never write accepted source.
+
+Offline corpus regeneration (Go >=1.23 locally, read pinned source first):
+
+```sh
+GOPROXY=off GOSUMDB=off GOTOOLCHAIN=local PYTHONDONTWRITEBYTECODE=1 python3 -B tools/go-corpus/generate.py ../pll > "$EXTERNAL_CORPUS"
+cmp fixtures/go-public-api.json "$EXTERNAL_CORPUS"
+```
+
+Generator source, case inputs and binary64 encodings are protected/reviewable.
+Each generation runs the public Go harness twice; compare entire output on the
+same recorded Go/platform for byte identity. Different versions require review.
+No timestamps enter payload. Go is provenance, not authority; Python-only type,
+exception, enum, config naming, iterator and zero-value differences are explicit
+in SPEC. Broader coverage is not exhaustive proof or nanosecond-wide accuracy.
+
+No live launch during preparation. After review only, same pinned model commands:
+
+```sh
+CHEAP_CMD='pi --provider anthropic --model claude-haiku-5-5 --thinking high --print --no-session' \
+STRONG_CMD='pi --provider openai-codex --model gpt-6.1-sol --thinking high --print --no-session' \
+STRONGEST_CMD='pi --provider openai-codex --model gpt-6.1-sol --thinking max --print --no-session' \
+PYTHONDONTWRITEBYTECODE=1 bash scripts/loop.sh
+```
+
+Same spending caps/isolated credentials and MAX_ITER=60, MAX_ATTEMPTS=4,
+ITER_SECONDS=1200, JUDGE_TIMEOUT=300; no substitutions. Passing attempts commit
+on the authorized branch, failing attempts discard only attempt-owned changes.
+`.loop/` contains prompts/logs/diffs/notes; root STOP names exhausted task.
+Progress notes are not an automatic stop. Return for parent review after kit.
+See [verification](docs/stage3-verification.md) for observed versus promised work.

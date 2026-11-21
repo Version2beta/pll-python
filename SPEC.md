@@ -1,3 +1,66 @@
+# Stage 3 subordinate supporting contract
+
+README.md Decisions, numerical contract and Stage 3 operations are authoritative.
+Stage 1/2 code and all 43 tests remain byte-identical. No production repair is
+allowed: any disagreement blocks for review before change or relaxed tolerance.
+
+Complete/protected: all pll/*.py, all prior tests, fixtures, Go harness and case
+generator, schema loader, distribution judge, MANIFEST.in, docs and runner.
+Writable: scripts/replay_corpus.py, pyproject.toml, PROGRESS.md only.
+
+| Promise | Check/task |
+| --- | --- |
+| All preceding APIs/effects/examples | unchanged T1–T6/F1–F6 (43 tests) |
+| Canonical schema, complete artifacts, fixed seeded inputs, independent Fraction/Decimal | tests.test_corpus (7 tests), S1 |
+| Public Go replay parity with normalized shared domain | S1 replay_file(path)->int returns 2299 checked rows, raises ValueError malformed schema, AssertionError disagreement with reproduction |
+| Distribution metadata/archive/install/examples | S2 check_distribution.py |
+| Full preserved + new stage | S3 last: 50 tests and build/install judge |
+
+S1 must use complete corpus_schema.load/verify_artifacts then public pll APIs for
+each case. Initial row is reduced Rate plus string, or normalized error. Config
+construction adds one error row on failure; otherwise one result per operation.
+Rate/Span results and operation args use canonical decimal strings; binary64
+inputs/results use 16 lowercase hex bits (including config NaN/infinity/-0).
+New controller per case, retained spans indexed in successful issuance order.
+all is bounded by supplied limit; never materialize huge spans. Case tolerance
+applies only to specified numerical fields, never category/status/state/errors:
+exact by default; moderate error/local 1ns, remote 1tick, offset 1e-12, jitter 2ns;
+extreme source-matrix local 1ns/offset 1e-20 only. Trim remains exact. No silent
+zip truncation or skipped cases. Return number of checked result rows.
+
+Go errors normalize to invalid_rate/invalid_argument/overflow/order/not_anchored;
+ConfigError to config plus Go field and exact reason (Python field mapping:
+Nominal=nominal, Bandwidth=bandwidth_hz, Damping=damping,
+MaxOffsetPPM=max_offset_ppm, Window=window_ns,
+OutlierThreshold=outlier_threshold_ns, StepAfter=step_after,
+LockThreshold=lock_threshold_ns, LockCount=lock_count,
+HoldoverAfter=holdover_after_ns). Return tags and string arrays are supplied.
+Python exceptions vs Go sentinel errors, strict bool/type/envelopes, frozen values,
+span index exceptions, iterator forms, unknown enum construction, zero-value
+controller semantics and signed64 config count baseline are not raw Go parity.
+Only shared valid signature types/envelopes are generated; prior Python tests
+retain Python-only coverage. Go cannot override any approved Python promise.
+
+S2 pyproject: setuptools.build_meta, requires setuptools==84.2.1 and wheel==0.48.0;
+project name pll-python/version 0.1.0/description exact rational pacing and clock
+following/readme README.md/requires-python >=3.11/license MIT/license-files LICENSE;
+no dependencies, scripts, entry points or optional runtime requirements. Explicit
+packages=["pll"], no automatic discovery, include-package-data=false. Supply PEP
+621/639 metadata; no custom backend. MANIFEST.in is complete. Source and all pll
+files must retain bytes; archive only public package, README, LICENSE, metadata.
+Build-only tools are pinned in scripts/build-requirements.txt; judge requires
+PLL_BUILD_PYTHON absolute external interpreter and performs no provisioning.
+
+Independent checks are bounded, not exhaustive. Fraction tests independently
+check corpus initial spans, Decimal 110-digit checks crosscheck source gain
+matrix; retained moderate independent-model/Decimal/Fraction tests still run.
+Final task replaces preceding whole-tree task. Metadata/replay are new work;
+complete generated data has no invented implementation task. Stop after review;
+no publishing, devices, release automation, provider/model call or live loop.
+
+---
+## Historical Stage 2 contract (superseded scope/operations, retained precision)
+
 # Stage 2 supporting contract — pacing preservation and complete Follower
 
 README.md is authority, including approved Decisions, Public API, config table,

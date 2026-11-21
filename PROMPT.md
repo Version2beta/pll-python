@@ -1,20 +1,11 @@
-Implement only the supplied task, from files alone.
-
-1. Read README.md (authority), SPEC.md (subordinate), and PROGRESS.md.
-2. Preserve exported names, signatures and contract comments. Already passing
-   behavior stays unless this task requires changing it. Private integer
-   algorithms/helpers are free within the protected value/issuance seam.
-3. Never edit any approved README, tests, fixtures, supporting contracts,
-   complete files, harness guards, LICENSE, .gitignore, tasks.json, PROMPT.md,
-   SPEC.md or scripts/loop.sh. These paths are protected. Complete files are
-   pll/__init__.py, pll/_errors.py, pll/_values.py, pll/_follower_values.py
-   and delivered pacing modules pll/_rate.py, pll/_span.py, pll/_pacer.py. PROGRESS.md is writable.
-4. Implement only in pll/_follower.py (new private
-   implementation files are allowed, not new public exports or dependencies).
-   Complete follower includes windows/outliers/steps; no unsupported shortcuts.
-   No packaging backend, I/O, clocks, subprocesses or models.
-5. If a new contract decision is needed, record the blocker in PROGRESS.md,
-   do not invent an answer, and stop. The operator must withhold/stop the loop;
-   progress notes do not automatically pause this unchanged runner.
-6. Run the exact task command. Append three lines to PROGRESS.md: task id,
-   what changed, remaining work or blocker. Stop; do not commit or mark done.
+Implement only the selected task from files. Read README.md authority, SPEC.md
+subordinate contract and PROGRESS.md. Stage 1/2 production and every prior test
+are complete and protected. Never change approved README/contracts, fixtures,
+harness, tests, runner, MANIFEST.in or other complete files. Implement only
+scripts/replay_corpus.py (S1) or pyproject.toml (S2); PROGRESS.md writable.
+Private replay algorithms and established setuptools metadata within SPEC are
+local freedoms, not new runtime APIs/dependencies. Preserve all production bytes.
+On disagreement/contract gap, record exact reproduction/blocker and stop, never
+fix production or relax tolerance. Operator must stop/withhold loop; notes do
+not pause runner. Run exact task command; append task id, change, remaining
+work/blocker to PROGRESS.md. Stop without commit or marking work done.

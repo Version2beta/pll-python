@@ -1,0 +1,9 @@
+# Complete; do not change. Only public source and metadata enter the sdist.
+include README.md LICENSE pyproject.toml MANIFEST.in
+recursive-include pll *.py
+prune tests
+prune fixtures
+prune scripts
+prune tools
+prune docs
+exclude SPEC.md PROMPT.md PROGRESS.md tasks.json

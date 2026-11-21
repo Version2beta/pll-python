@@ -30,3 +30,8 @@ Remaining: F3-F7 loop/window/model/workflow and whole-suite validation have not 
 F5
 Converted outlier/run-agreement and lock thresholds to binary64 in pll/_follower.py to preserve pinned Go comparison behavior at signed64 boundaries; exact task command passed (PASS COUNT 3).
 Remaining: broader regression/workflow and whole-suite validation not run in this attempt; no new contract decision or blocker. Not committed or marked done.
+
+Stage 3 preparation (not a coder attempt): 43 preceding owner checks preserved;
+protected deterministic Go corpus/schema/harness/tests and external build/install
+judge added. S1 replay and S2 metadata remain stubs; S3 is the final gate.
+No live loop/model calls; return verified preparation for parent review.

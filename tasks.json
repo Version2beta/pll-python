@@ -11,9 +11,12 @@
     "^docs/.*$",
     "^fixtures/.*$",
     "^tests/.*$",
-    "^scripts/.*$",
     "^pll/(__init__|_errors|_values)\\.py$",
-    "^pll/(_rate|_span|_pacer|_follower_values)\\.py$"
+    "^pll/(_rate|_span|_pacer|_follower_values)\\.py$",
+    "^pll/.*$",
+    "^tools/.*$",
+    "^MANIFEST\\.in$",
+    "^scripts/(check_tree\\.py|run_tests\\.py|loop\\.sh|corpus_schema\\.py|check_distribution\\.py|build-requirements\\.txt)$"
   ],
   "tasks": [
     {
@@ -168,55 +171,32 @@
       "tier": "hard"
     },
     {
-      "id": "F7",
-      "title": "Whole tree: syntax, whitespace, protection inventory, every test green",
-      "test": "PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/check_tree.py && PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/run_tests.py all 43",
+      "id": "S1",
+      "title": "Implement public API corpus replay",
+      "test": "PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/run_tests.py tests.test_corpus 7",
       "expect": [
+        "^PASS COUNT 7$",
+        "^PASS tests\\.test_corpus\\.CorpusTests\\.test_public_api_replay$"
+      ],
+      "tier": "hard"
+    },
+    {
+      "id": "S2",
+      "title": "Implement installable distribution metadata",
+      "test": "PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/check_distribution.py",
+      "expect": [
+        "^PASS DISTRIBUTION BUILDS AND INSTALLED EXAMPLES$"
+      ],
+      "tier": "hard"
+    },
+    {
+      "id": "S3",
+      "title": "Whole tree: all 50 tests, artifacts and installed distribution",
+      "test": "PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/check_tree.py && PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/run_tests.py all 50 && PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/check_distribution.py",
+      "expect": [
+        "^PASS COUNT 50$",
         "^PASS SYNTAX AND WHITESPACE$",
-        "^PASS tests\\.test_rate\\.RateTests\\.test_reduction_and_strings$",
-        "^PASS tests\\.test_rate\\.RateTests\\.test_type_then_envelope_then_semantics$",
-        "^PASS tests\\.test_rate\\.RateTests\\.test_integer_subclasses$",
-        "^PASS tests\\.test_rate\\.RateTests\\.test_sentinel_and_immutable_rates$",
-        "^PASS tests\\.test_rate\\.RateTests\\.test_errors$",
-        "^PASS tests\\.test_rate\\.RateTests\\.test_surface_and_signatures$",
-        "^PASS tests\\.test_pacer_claim\\.ClaimTests\\.test_constructor_and_initial_cursor$",
-        "^PASS tests\\.test_pacer_claim\\.ClaimTests\\.test_claim_contiguity_and_ceil$",
-        "^PASS tests\\.test_pacer_claim\\.ClaimTests\\.test_claim_validation_atomic$",
-        "^PASS tests\\.test_pacer_claim\\.ClaimTests\\.test_floor_fit_ceil_overflow$",
-        "^PASS tests\\.test_pacer_claim\\.ClaimTests\\.test_huge_claim_no_materialization$",
-        "^PASS tests\\.test_span\\.SpanTests\\.test_hand_fixtures$",
-        "^PASS tests\\.test_span\\.SpanTests\\.test_empty_and_index_rules$",
-        "^PASS tests\\.test_span\\.SpanTests\\.test_immutable_and_outlives_controller$",
-        "^PASS tests\\.test_span\\.SpanTests\\.test_lazy_fresh_iterators$",
-        "^PASS tests\\.test_pacer_due\\.DueTests\\.test_exact_neighbors_and_empty_first$",
-        "^PASS tests\\.test_pacer_due\\.DueTests\\.test_backlog_earlier_now_and_alias$",
-        "^PASS tests\\.test_pacer_due\\.DueTests\\.test_skip_keep_and_zero$",
-        "^PASS tests\\.test_pacer_due\\.DueTests\\.test_multiphase_validation_atomic$",
-        "^PASS tests\\.test_pacer_due\\.DueTests\\.test_cursor_u_and_floor_fit_boundaries$",
-        "^PASS tests\\.test_pacer_trim\\.TrimTests\\.test_floor_anchor_and_retained_spans$",
-        "^PASS tests\\.test_pacer_trim\\.TrimTests\\.test_equal_trim_does_not_reanchor$",
-        "^PASS tests\\.test_pacer_trim\\.TrimTests\\.test_extreme_trims_and_large_terms$",
-        "^PASS tests\\.test_pacer_trim\\.TrimTests\\.test_validation_and_failed_change_atomic$",
-        "^PASS tests\\.test_pacer_trim\\.TrimTests\\.test_cursor_u_trim_allowed_if_floor_fits$",
-        "^PASS tests\\.test_models\\.ModelTests\\.test_seeded_sequences$",
-        "^PASS tests\\.test_models\\.ModelTests\\.test_due_neighbors_against_formula$",
-        "^PASS tests\\.test_readme\\.ReadmeTests\\.test_pacing_examples$",
-        "^PASS tests\\.test_effects\\.EffectsTests\\.test_no_runtime_effects_and_source_mutation$",
-        "^PASS tests\\.test_follower_config\\.ConfigTests\\.test_defaults_values_enums_errors$",
-        "^PASS tests\\.test_follower_config\\.ConfigTests\\.test_field_by_field_validation$",
-        "^PASS tests\\.test_follower\\.MappingTests\\.test_anchor_ties_large_origins_and_wide_cancellation$",
-        "^PASS tests\\.test_follower\\.MappingTests\\.test_validation_order_and_failure_retry$",
-        "^PASS tests\\.test_follower\\.LoopTests\\.test_lock_jitter_holdover_reset$",
-        "^PASS tests\\.test_follower\\.LoopTests\\.test_threshold_outlier_first_reference_step_and_order$",
-        "^PASS tests\\.test_follower\\.LoopTests\\.test_saturation_and_atomic_overflow_retry$",
-        "^PASS tests\\.test_follower\\.WindowTests\\.test_half_open_signed_minimum_tie_and_last_accepted$",
-        "^PASS tests\\.test_follower\\.WindowTests\\.test_postflush_mapping_and_failed_flush_retry$",
-        "^PASS tests\\.test_follower_models\\.ModelTests\\.test_moderate_independent_model$",
-        "^PASS tests\\.test_follower_models\\.ModelTests\\.test_decimal_extreme_finite_gains$",
-        "^PASS tests\\.test_follower_models\\.ModelTests\\.test_offset_and_jitter_saturation$",
-        "^PASS tests\\.test_follower_workflows\\.WorkflowTests\\.test_readme_and_cross_pacer$",
-        "^PASS tests\\.test_follower_workflows\\.WorkflowTests\\.test_import_and_runtime_effects$",
-        "^PASS COUNT 43$"
+        "^PASS DISTRIBUTION BUILDS AND INSTALLED EXAMPLES$"
       ],
       "tier": "hard"
     }
