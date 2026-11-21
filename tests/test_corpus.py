@@ -36,19 +36,74 @@ class CorpusTests(unittest.TestCase):
                          {'config','invalid_rate','invalid_argument','overflow','order','not_anchored'})
 
     def test_reject_malformed_schema(self):
-        d=load(PATH)
-        bad=[]
-        for key,value in [('schema','unknown'),('seed','0'),('source','wrong')]:
-            x=copy.deepcopy(d);x[key]=value;bad.append(x)
-        x=copy.deepcopy(d);x['cases'][0]['rate'][0]='00';bad.append(x)
-        x=copy.deepcopy(d);x['cases'][0]['config']={'Bandwidth':'nan'};bad.append(x)
-        x=copy.deepcopy(d);x['cases'][10]['ops'][0]['args'][0]=True;bad.append(x)
+        data=load(PATH)
+        mutations=[]
+
+        def change(label, path, value):
+            malformed=copy.deepcopy(data)
+            target=malformed
+            for key in path[:-1]:
+                target=target[key]
+            target[path[-1]]=value
+            mutations.append((label, malformed))
+
+        for field in ('source_hashes', 'harness_hashes'):
+            for label,value in [('null',None), ('empty',{}), ('list',[]),
+                                ('string','bad'), ('non-hash',{'main.go':None})]:
+                change(field+'-'+label,[field],value)
+            values=copy.deepcopy(data[field])
+            name=next(iter(values))
+            change(field+'-hash-shape',[field,name],'not-a-sha256')
+            change(field+'-null-hash',[field,name],None)
+            missing=copy.deepcopy(data[field]);missing.pop(name)
+            change(field+'-missing-entry',[field],missing)
+            change(field+'-hash-value',[field,name],'0'*64)
+            values['../'+name]=values.pop(name)
+            change(field+'-path-substitution',[field],values)
+        for field in ('go', 'algorithm', 'command', 'seed', 'source', 'schema'):
+            change(field+'-null',[field],None)
+            change(field+'-invalid',[field],'unknown')
+        pacer=next(i for i,c in enumerate(data['cases']) if c['id']=='pacer-neighbors-retention')
+        follower=next(i for i,c in enumerate(data['cases']) if c['id']=='lock-holdover')
+        op=['cases',pacer,'ops',0]
+        for label,args in [('negative-unsigned',['-1']), ('overflow-unsigned',[str(2**64)]),
+                           ('bool',[True]), ('noncanonical',['00']), ('extra-arg',['1','2']),
+                           ('missing-arg',[]), ('wrong-shape','1')]:
+            change(label,op+['args'],args)
+        change('wrong-pacer-operation',op,{'name':'local','args':['0']})
+        change('wrong-follower-operation',['cases',follower,'ops',0],{'name':'claim','args':['1']})
+        change('missing-controller',['cases',pacer,'kind'],'rate')
+        for name,args in [('due',[str(2**63),'1']), ('skip',[str(-2**63-1),'0']),
+                          ('set_trim',[str(2**63)]), ('time',['-1','0']),
+                          ('time',['0',str(2**64)]), ('time',['0','2']),
+                          ('all',['0','0']), ('all',['0',str(2**63)])]:
+            # A valid retained span exists after operation zero.
+            change(name+'-'+str(args),['cases',pacer,'ops',1],{'name':name,'args':args})
+        for name,args in [('observe',['0',str(2**63)]), ('local',[str(-2**63-1)]),
+                          ('remote',[str(2**63)]), ('state',[str(2**63)]), ('reset',['0'])]:
+            change(name+'-envelope-or-arity',['cases',follower,'ops',0],{'name':name,'args':args})
+        for label,config in [('null',None), ('list',[]), ('unknown',{'Bogus':'0'}),
+                             ('float',{'Bandwidth':'nan'}), ('signed',{'Window':str(2**63)}),
+                             ('nominal',{'Nominal':'1'})]:
+            change('config-'+label,['cases',follower,'config'],config)
+        change('wrong-controller-config',['cases',pacer,'config'],{'Window':'0'})
+        change('rate-envelope',['cases',pacer,'rate'],['1',str(2**64)])
+        change('bad-status',['results',follower,7],['observation','6','0'])
+        change('bad-state',['results',follower,6],['state','3'])
+        change('bad-row-shape',['results',pacer,1],['span','0'])
+        change('wrong-row-controller',['results',pacer,1],['observation','1','0'])
+        change('wrong-error-category',['results',pacer,1],['error','order'])
+        change('bad-signed-result',['results',follower,1],['int',str(2**63)])
+        change('bad-results-shape',['results'],{})
+        change('null-case',['cases',pacer],None)
+        mutations.append(('null-document',None))
         with tempfile.TemporaryDirectory() as tmp:
-            p=Path(tmp)/'bad.json'
-            for x in bad:
-                p.write_bytes(canonical(x))
-                with self.assertRaises((ValueError,TypeError)):
-                    load(p)
+            path=Path(tmp)/'bad.json'
+            for label,malformed in mutations:
+                with self.subTest(label=label):
+                    path.write_bytes(canonical(malformed))
+                    with self.assertRaises(ValueError):
+                        replay_file(path)
 
     def test_artifact_identity_and_case_regeneration(self):
         d=load(PATH);verify_artifacts(d)

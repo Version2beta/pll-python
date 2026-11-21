@@ -35,3 +35,8 @@ Stage 3 preparation (not a coder attempt): 43 preceding owner checks preserved;
 protected deterministic Go corpus/schema/harness/tests and external build/install
 judge added. S1 replay and S2 metadata remain stubs; S3 is the final gate.
 No live loop/model calls; return verified preparation for parent review.
+
+Stage 3 preparation repair after P1 review: complete schema guard now validates
+provenance, operation/controller domains and result shapes before replay; focused
+malformed tests run through replay_file. Production/prior tests/corpus unchanged.
+Live launch withheld pending independent re-review; no coder/model attempt.

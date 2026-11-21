@@ -88,3 +88,50 @@ The final generator confines GOCACHE/GOPATH to its disposable temporary director
 Preliminary harness builds used Go's normal build cache; no arbitrary cache
 contents were searched/read as evidence. Final two-generation equality was
 rechecked with isolated caches, and upstream source hashes remain unchanged.
+
+## Preparation repair after independent BLOCK review
+
+Review of revision `06b2da258b29202699b39dedb4d1a3ad21df1295` found P1:
+malformed provenance and operation records could escape the complete loader,
+causing arbitrary replay exceptions or skipped harness checks. Live launch stays
+withheld. This is protected preparation maintenance, not a coder attempt or a
+new contract, production repair, or tolerance change.
+
+The complete loader now explicitly validates provenance shapes/values, the exact
+three-file harness hash inventory, and the pinned Go source-manifest fingerprint;
+no supplied path is read before that inventory check. Operation arities, numeric
+signed/unsigned envelopes, controller compatibility, config shapes and supported
+Nominal sentinel are checked before replay. Result rows validate operation tags,
+status/state domains, signed/unsigned fields, normalized error shapes, retained
+span references and extents. The loader does not catch arbitrary replay errors;
+validly shaped but numerically wrong expected results still reach replay and
+raise AssertionError. Malformed shared-domain data raises ValueError.
+
+The existing malformed-schema test now exercises replay_file directly with
+null/empty/wrong-shaped provenance, path/hash substitutions, negative unsigned
+and overflowing signed inputs, incompatible controller operations, bad arity,
+config and status/result shapes. Test-method count remains seven (50 whole-tree).
+On the preceding guard this focused regression test fails with 27 failures and
+18 errors; on the repaired guard every malformed case raises ValueError.
+Canonical corpus bytes remain unchanged: 84 cases, 2299 rows, SHA256
+`0a57a1d7ef6ed4b86745b00bdfe420cb005a1df87919851300efe06a0f9e853b`.
+
+Fresh repair evidence: `/tmp/pll-stage3-repair.Ok3Tjn/`, preserving original
+`/tmp/pll-stage3.I7Kron/` evidence. `baseline-preservation.json` records each of
+22 production/prior-test paths with baseline and current SHA256 and byte equality
+against `878a652cf27c7587055ed7fe81e15b2fa5723168`.
+`baseline-production-prior-tests.diff` is the independently reproducible empty
+baseline-to-current diff for exactly those paths, not merely clean-checkout
+status. `repair.diff` records the complete preparation repair. No prior test or
+production bytes changed, and no upstream or private runtime was accessed.
+
+Fresh unchanged-runner --check verification is repeated on private two-task
+reference and supplied stubs with Python 3.11 and 3.15. Reference: all 15 task
+rows pass, including 50 tests and wheel/sdist installed README examples. Stubs:
+12 retained rows pass and S1/S2/S3 fail as intended on both interpreters. Source
+snapshots around judges are identical. The original external pinned build venv
+is reused; no new provisioning/network/system installation is needed. Distribution
+checks use external temporary builds and fresh local wheel-install environments,
+no-index/no-deps, with installed import provenance asserted. Runner bytes remain
+identical to the skill. No model calls/live loop or release effects occurred.
+Stop here for independent re-review; bounded coverage limitations still apply.
