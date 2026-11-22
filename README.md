@@ -1,4 +1,4 @@
-# pypll
+# phase-locked-loop
 
 
 The Rate, Pacer, complete Follower and `pllpace` command are implemented.
@@ -37,12 +37,12 @@ commands were excluded from initial port scope. The
 ## Installation
 
 Requires CPython 3.11+ with binary64 floats and unbounded integers.
-No runtime dependencies. The distribution is `pypll`; the import is `pll`.
+No runtime dependencies. The distribution is `phase-locked-loop`; the import is `pll`.
 
 After the 0.1.0 release is published:
 
 ```sh
-python -m pip install pypll==0.1.0
+python -m pip install phase-locked-loop==0.1.0
 ```
 
 For a release candidate, install the validated wheel with
