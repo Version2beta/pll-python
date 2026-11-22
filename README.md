@@ -1,8 +1,13 @@
-# pll-python — exact pacing and clock following
+# pll-python
 
+<!-- site:skip -->
 > **Stages 1–3 delivered; explicit `pllpace` CLI added by direct request.**
 > Stage 1/2 runtime production bytes remain unchanged. Local distribution version: 0.1.0.
 > See [Stage 3 verification](docs/stage3-verification.md); no registry release is claimed.
+<!-- /site:skip -->
+
+The Rate, Pacer, complete Follower and `pllpace` command are implemented.
+Local distribution version: `0.1.0`; no registry publication is established.
 
 This library helps audio/video, sensor, packet and device-buffer applications
 pace units on their own timeline or learn the relationship to another clock.
@@ -11,6 +16,7 @@ A type-II, second-order phase-locked **Follower** estimates remote-clock phase
 and frequency, filters delivery jitter, and maps ticks to local nanoseconds.
 They work separately or together: follower trim can steer a pacer.
 
+<!-- site:skip -->
 ## Decisions and review gate
 
 | Status | Decision and rationale |
@@ -40,19 +46,15 @@ runtime is excluded and never copied/staged; pinned upstream remains read-only.
 in `pyproject.toml`, with no new runtime module, API or dependency. Protected
 artifacts/harness/tests and contracts are unchanged; kit write permissions below
 are historical, not an invitation to start another implementation loop.
+<!-- /site:skip -->
 
 ## Provenance, parity and non-goals
 
 Source: Go `github.com/version2beta/pll`, revision
-`971282632129110794c9d6edd22026e9de2359be` (short `9712826`), examined in
-`/Users/rob/Development/pll`. The basis is its complete `SPEC.md`, `README.md`,
+[`971282632129110794c9d6edd22026e9de2359be`](https://github.com/version2beta/pll/tree/971282632129110794c9d6edd22026e9de2359be). The basis is its complete `SPEC.md`, `README.md`,
 `rate.go`, `pacer.go`, `span.go`, `follower.go`, errors/status/package comments,
 and the rate, pacer, follower, examples, boundary and differential-model tests.
-The original is the provenance, not a runtime dependency. This
-standalone root README is the port's user-facing readme-loop authority;
-supporting kit specifications may clarify but cannot override it. Source/doc
-conflicts or subsequent upstream changes require explicit review, not automatic
-adoption.
+The original is provenance, not a runtime dependency.
 
 Functional parity means exact pacer results, equivalent follower equations and
 state transitions, error categories and atomic failures on the shared domain.
@@ -65,8 +67,8 @@ allocations, race-detector results, simulator results or real-time scheduling.
 This is a library, not a token bucket, sleeping rate limiter, scheduler, clock
 servo/PTP/NTP client, counter-unwrapper, transport, payload queue or device driver.
 The Go `cmd/pllpace`, `cmd/pllsim`, UDP tests, full simulator and benchmarking
-commands were excluded from initial port scope. The directly requested
-`pllpace` adapter is now included; simulator and benchmark products remain deferred.
+commands were excluded from initial port scope. The
+`pllpace` adapter is included; simulator and benchmark products remain deferred.
 
 ## Prerequisites and installation (local 0.1.0 distribution)
 
@@ -135,7 +137,7 @@ consume real time/memory; search can run many trials. Ctrl-C cancels it.
 The library itself still performs no implicit effects. Importing `pll.pllpace`
 starts no clocks, output, threads or sockets; effects belong to CLI invocation.
 
-## First useful example (delivered Stage 1)
+## First useful example
 
 All times are **integer nanoseconds**, never floating seconds or `datetime`.
 
@@ -156,7 +158,7 @@ slot 1200 is due. Slot 1201 has exact time `1201 * 10**9 / 48000`, whose
 ceiling is 25,020,834 ns. A late call produces backlog rather than silently
 losing work. The caller chooses to process it, cap each batch, or skip it.
 
-## Public API (approved finished-tool surface)
+## Public API
 
 Signatures use ordinary Python annotations; `Iterator` is from `collections.abc`.
 Methods not shown as properties are called methods. No async or blocking API.
@@ -208,7 +210,7 @@ Rate terms and slot/count/cap/keep arguments are integers in 0..U; valid rate
 terms and claim/cap counts must be positive. Pacer times supplied by the caller
 must fit signed 64-bit ns, then must be nonnegative. Follower local/now times
 and remote ticks may be negative but must fit signed 64-bit. Config duration
-fields fit signed 64-bit; step/lock counts also use signed 64-bit (the approved
+fields fit signed 64-bit; step/lock counts also use signed 64-bit (the
 64-bit compatibility baseline, rather than a platform-dependent Go `int`).
 Trim inputs fit signed 64-bit, then must lie strictly between ±10**12.
 Internal intermediate integer products are unbounded and must not overflow.
@@ -297,7 +299,7 @@ first+count-1, and may outlive its pacer. Empty spans iterate zero items and
 have no valid time index. Manually forged objects/private-field changes have no
 timing guarantees. No operation materializes every slot merely to issue a span.
 
-### More hand-checkable pacing examples (delivered Stage 1)
+### More hand-checkable pacing examples
 
 ```python
 from pll import Pacer, bits_per_second, units_per_second
@@ -348,7 +350,7 @@ Defaults target low-jitter readings. An optional, not automatic, network profile
 from the source uses bandwidth 0.005 Hz, window 1_000_000_000 ns, lock threshold
 2_000_000 ns, outlier threshold 20_000_000 ns, other defaults unchanged. It trades
 settling speed for filtering. No source simulator's measured accuracy or lock
-latency is promised by this draft.
+latency is promised by this library.
 
 ## Follower state machine and numerical contract
 
@@ -478,7 +480,7 @@ rounding, saturation and integer anchors are nevertheless contractual. For
 example a 0.5 ns period with anchor `(local=1,remote=0)` maps remote -1 to
 `1+round_away(-0.5)=0`; anchor `(-1,0)` maps remote 1 to 0.
 
-### Cross-module success and failure (promised)
+### Cross-module success and failure
 
 ```python
 from dataclasses import replace
@@ -557,6 +559,33 @@ write environment/build/cache files, tests consume CPU and may write controlled
 fixture/cache outputs. None of these are promised library runtime effects.
 No network or credentials are required by the deterministic checks.
 
+## Verification
+
+Run the deterministic standard-library tests from the repository root:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v
+PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/check_tree.py
+```
+
+Tests cover exact pacing against an independent rational oracle, follower
+models and boundary cases, failure preservation, README examples and replay of
+pinned public-Go fixtures. Finite fixtures are not proof of universal parity
+or portable performance. See [delivery evidence](docs/stage3-verification.md)
+for historical checks and their numerical limits.
+
+To build a local distribution, use an existing build environment containing
+[scripts/build-requirements.txt](scripts/build-requirements.txt), then run:
+
+```sh
+python -I -m build --no-isolation --sdist --wheel --outdir "$DIST_DIR"
+```
+
+Build from a separate source copy and choose an external output directory to
+keep build artifacts outside the checkout. Build dependencies are not runtime
+dependencies. No registry release is claimed.
+
+<!-- site:skip -->
 ## Deterministic verification contract (delivered Stage 2)
 
 Use standard-library `unittest` with source-named tests: rate, pacer, span,
@@ -766,3 +795,4 @@ on the authorized branch, failing attempts discard only attempt-owned changes.
 Progress notes are not an automatic stop. Return for parent review after kit.
 See [verification](docs/stage3-verification.md) for fresh owner delivery evidence
 and clearly separated historical preparation records.
+<!-- /site:skip -->
