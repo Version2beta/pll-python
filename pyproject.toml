@@ -12,6 +12,11 @@ license = "MIT"
 license-files = ["LICENSE"]
 dependencies = []
 
+[project.urls]
+Repository = "https://github.com/Version2beta/pll-python"
+Documentation = "https://github.com/Version2beta/pll-python#readme"
+Issues = "https://github.com/Version2beta/pll-python/issues"
+
 [project.scripts]
 pllpace = "pll.pllpace:main"
 
