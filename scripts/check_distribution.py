@@ -27,7 +27,7 @@ def main():
     assert config['build-system'] == {'requires':['setuptools==84.2.1','wheel==0.48.0'],
                                       'build-backend':'setuptools.build_meta'}
     project = config['project']
-    assert project['name']=='pypll' and project['version']=='0.1.0'
+    assert project['name']=='phase-locked-loop' and project['version']=='0.1.0'
     assert project['requires-python']=='>=3.11' and project['readme']=='README.md'
     assert project['license']=='MIT' and project['license-files']==['LICENSE']
     assert project['dependencies']==[]
@@ -63,9 +63,9 @@ def main():
             allowed={'README.md','LICENSE','pyproject.toml','MANIFEST.in','PKG-INFO','setup.cfg'}
             for n in members:
                 rel='/'.join(n.split('/')[1:])
-                if not rel or rel in ('pll','pypll.egg-info'):
+                if not rel or rel in ('pll','phase_locked_loop.egg-info'):
                     continue
-                if rel not in allowed and rel not in {'pll/'+x for x in SOURCES} and not rel.startswith('pypll.egg-info/'):
+                if rel not in allowed and rel not in {'pll/'+x for x in SOURCES} and not rel.startswith('phase_locked_loop.egg-info/'):
                     raise AssertionError(('unexpected sdist member',rel))
             archive.extractall(tmp/'unpacked', filter='data')
         print('SDIST MANIFEST '+json.dumps(members))
@@ -77,13 +77,13 @@ def main():
             with zipfile.ZipFile(w) as archive:
                 names=archive.namelist()
                 assert {n for n in names if n.startswith('pll/')} == {'pll/'+n for n in SOURCES}, names
-                assert all(n.startswith(('pll/','pypll-0.1.0.dist-info/')) for n in names),names
-                metadata=email.message_from_bytes(archive.read('pypll-0.1.0.dist-info/METADATA'))
-                assert metadata['Name']=='pypll' and metadata['Version']=='0.1.0'
+                assert all(n.startswith(('pll/','phase_locked_loop-0.1.0.dist-info/')) for n in names),names
+                metadata=email.message_from_bytes(archive.read('phase_locked_loop-0.1.0.dist-info/METADATA'))
+                assert metadata['Name']=='phase-locked-loop' and metadata['Version']=='0.1.0'
                 assert metadata['Requires-Python']=='>=3.11' and not metadata.get_all('Requires-Dist')
                 assert metadata['License-Expression']=='MIT'
-                assert archive.read('pypll-0.1.0.dist-info/entry_points.txt').decode().strip() == '[console_scripts]\npllpace = pll.pllpace:main'
-                assert archive.read('pypll-0.1.0.dist-info/licenses/LICENSE')==(ROOT/'LICENSE').read_bytes()
+                assert archive.read('phase_locked_loop-0.1.0.dist-info/entry_points.txt').decode().strip() == '[console_scripts]\npllpace = pll.pllpace:main'
+                assert archive.read('phase_locked_loop-0.1.0.dist-info/licenses/LICENSE')==(ROOT/'LICENSE').read_bytes()
                 for n in SOURCES:
                     assert archive.read('pll/'+n)==(ROOT/'pll'/n).read_bytes()
             print('WHEEL MANIFEST '+json.dumps(names))
@@ -94,7 +94,7 @@ def main():
                 run([py,'-I','-m','pip','install','--no-index','--no-deps',str(w)],tmp)
                 probe="import pll,sys,pathlib; assert pathlib.Path(pll.__file__).is_relative_to(sys.prefix); print(pll.__file__)\n"+examples
                 run([py,'-I','-c',probe],tmp)
-                probe_cli = "import pll.pllpace,sys,pathlib,importlib.metadata as m; assert pathlib.Path(pll.pllpace.__file__).is_relative_to(sys.prefix); ep=[e for e in m.distribution('pypll').entry_points if e.name=='pllpace']; assert len(ep)==1 and ep[0].load() is pll.pllpace.main; print(pll.pllpace.__file__)"
+                probe_cli = "import pll.pllpace,sys,pathlib,importlib.metadata as m; assert pathlib.Path(pll.pllpace.__file__).is_relative_to(sys.prefix); ep=[e for e in m.distribution('phase-locked-loop').entry_points if e.name=='pllpace']; assert len(ep)==1 and ep[0].load() is pll.pllpace.main; print(pll.pllpace.__file__)"
                 run([py,'-I','-c',probe_cli],tmp)
                 for command in ([str(venv/'bin/pllpace')], [py,'-I','-m','pll.pllpace']):
                     run(command+['--help'],tmp)
